@@ -1,0 +1,39 @@
+@import '../../../vars.scss';
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background-color: white;
+  padding: 24px;
+  border: 1px solid #eaebed;
+  border-radius: 12px;
+  .description {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    .profession {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+      color: $blueMain500;
+    }
+    .paymentAndType {
+      display: flex;
+      gap: 12px;
+      .payment {
+        display: flex;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 20px;
+      }
+      .dot {
+        color: $grey600;
+      }
+    }
+    .location {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}

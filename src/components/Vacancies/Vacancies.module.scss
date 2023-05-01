@@ -1,0 +1,33 @@
+@import '../../vars.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  padding-bottom: 0;
+  overflow-y: auto;
+  .loaderContainer {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .vacanciesWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .paginationContainer {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    padding: 15px;
+    box-sizing: border-box;
+    background-color: $mainBackgroundColor;
+  }
+}

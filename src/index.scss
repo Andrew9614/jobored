@@ -25,6 +25,7 @@ body {
   height: 100%;
   display: grid;
   grid-template-rows: 84px;
+	overflow: auto;
 }
 
 code {
