@@ -2,32 +2,47 @@
 
 .container {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  padding-bottom: 0;
-  overflow-y: auto;
-  .loaderContainer {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+	align-items: baseline;
+	height: 100%;
+	overflow-y: auto;
+  .filter {
+    position: sticky;
+    top: 0;
   }
-  .vacanciesWrapper {
+  .vacancies {
+    width: 60%;
+		height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-  }
-  .paginationContainer {
-    position: sticky;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 5px;
-    padding: 15px;
-    box-sizing: border-box;
-    background-color: $mainBackgroundColor;
+    justify-content: space-between;
+    padding: 20px;
+    padding-bottom: 0;
+    .loaderContainer {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .vacanciesWrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .paginationContainer {
+      position: sticky;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 5px;
+      padding: 10px;
+      box-sizing: border-box;
+      background-color: $mainBackgroundColor;
+      &.bottom {
+        background-color: aqua;
+      }
+    }
   }
 }

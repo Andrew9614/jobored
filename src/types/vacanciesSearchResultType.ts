@@ -1,63 +1,63 @@
-export type MetroStation = {
+type MetroStation = {
   id: number;
   title: string;
   id_metro_line: number;
 };
 
-export type TypeOfWork = {
+type TypeOfWork = {
   id: number;
   title: string;
 };
 
-export type PlaceOfWork = {
+type PlaceOfWork = {
   id: number;
   title: string;
 };
 
-export type Education = {
+type Education = {
   id: number;
   title: string;
 };
 
-export type Experience = {
+type Experience = {
   id: number;
   title: string;
 };
 
-export type MaritalStatus = {
+type MaritalStatus = {
   id: number;
   title: string;
 };
 
-export type Children = {
+type Children = {
   id: number;
   title: string;
 };
 
-export type CataloguePosition = {
+type CataloguePosition = {
   id: number;
   title: string;
 };
 
-export type Catalogue = {
+type Catalogue = {
   id: number;
   title: string;
   positions: CataloguePosition[];
 };
 
-export type Gender = {
+type Gender = {
   id: number;
   title: string;
 };
 
-export type Town = {
+type Town = {
   id: number;
   title: string;
   declension: string;
   genitive: string;
 };
 
-export type Agency = {
+type Agency = {
   id: number;
   title: string;
 };

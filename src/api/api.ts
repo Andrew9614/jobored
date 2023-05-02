@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { VacanciesSearchResultType } from '../types/vacanciesSearchResultType';
+import { CatalogueType } from '../types/catalogueType';
+import { FilterType } from '../types/filterType';
 
 const superjob = axios.create({
   baseURL: 'https://startup-summer-2023-proxy.onrender.com/2.0/',
@@ -11,10 +13,19 @@ const superjob = axios.create({
 });
 
 export const jobAPI = {
-  async getVacancies(page = 1, count = 20) {
+  async getVacancies(page = 1, count = 20, filter: FilterType = {}) {
     const res = await superjob.get<VacanciesSearchResultType>(
-      `vacancies/?page=${page - 1}&count=${count}&published=1`
+      `vacancies/?page=${page - 1}&count=${count}&published=1&catalogues=${
+        filter.catalogues
+      }&payment_from=${filter.payment_from}&payment_to${
+        filter.payment_to
+      }&keyword=${filter.keyword || ''}`
     );
+    console.log(res.data);
+    return res.data;
+  },
+  async getCatalogues() {
+    const res = await superjob.get<CatalogueType[]>(`catalogues`);
     console.log(res.data);
     return res.data;
   },
