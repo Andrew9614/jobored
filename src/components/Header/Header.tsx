@@ -5,7 +5,7 @@ import { Logo } from './Logo/Logo';
 export const Header = () => {
   return (
     <header className={styles.container}>
-      <Link to={'/'}>
+      <Link className={styles.logo} to={'/'}>
         <Logo />
       </Link>
       <nav className={styles.linkContainer}>

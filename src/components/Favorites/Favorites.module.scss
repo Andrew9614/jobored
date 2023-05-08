@@ -8,8 +8,8 @@
   align-items: center;
   justify-content: center;
   button {
-    background-color: $buttonColorLight;
-    color: rgba(59, 124, 211, 1);
+    background-color: $blue100;
+    color: $blue600;
     transition: background-color 0.2s;
     &:hover {
       background-color: rgb(186, 210, 242);

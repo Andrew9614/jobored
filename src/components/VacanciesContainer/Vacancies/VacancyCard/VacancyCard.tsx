@@ -1,4 +1,4 @@
-import { VacancyObject } from '../../../types/vacanciesSearchResultType';
+import { VacancyObject } from '../../../../types/vacanciesSearchResultType';
 import styles from './VacancyCard.module.scss';
 
 type VacancyCardType = {
@@ -46,7 +46,7 @@ export const VacancyCard = ({ vacancy }: VacancyCardType) => {
           {vacancy.town.title}
         </div>
       </div>
-      <img src="/images/favStar.svg" alt="favStar" />
+      <img className={styles.favStar} src="/images/favStar.svg" alt="favStar" />
     </div>
   );
 };

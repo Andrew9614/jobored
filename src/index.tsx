@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Favorites } from './components/Favorites/Favorits';
-import { Vacancies } from './components/Vacancies/Vacancies';
+import { VacanciesContainer } from './components/VacanciesContainer/VacanciesContainer';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/search',
-        element: <Vacancies />,
+        element: <VacanciesContainer />,
       },
       {
         path: '/favorites',

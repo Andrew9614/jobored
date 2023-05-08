@@ -17,7 +17,7 @@ export const jobAPI = {
     const res = await superjob.get<VacanciesSearchResultType>(
       `vacancies/?page=${page - 1}&count=${count}&published=1&catalogues=${
         filter.catalogues
-      }&payment_from=${filter.payment_from}&payment_to${
+      }&payment_from=${filter.payment_from}&payment_to=${
         filter.payment_to
       }&keyword=${filter.keyword || ''}`
     );
