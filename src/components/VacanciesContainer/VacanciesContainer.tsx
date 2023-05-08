@@ -111,7 +111,7 @@ export const VacanciesContainer = () => {
             onChange={setPage}
             total={
               vacanciesList
-                ? vacanciesList.total / COUNT < 500
+                ? vacanciesList.total  < 500
                   ? Math.ceil(vacanciesList.total / COUNT)
                   : Math.ceil(500 / COUNT)
                 : 0

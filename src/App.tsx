@@ -23,6 +23,7 @@ function App() {
           Button: {
             styles: () => ({
               root: {
+                height: '40px',
                 fontWeight: 500,
                 fontSize: '14px',
                 transition: 'background-color 0.2s',
