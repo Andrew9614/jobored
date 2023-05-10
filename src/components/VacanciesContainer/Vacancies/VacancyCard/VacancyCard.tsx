@@ -4,9 +4,11 @@ import styles from './VacancyCard.module.scss';
 
 type VacancyCardType = {
   vacancy: VacancyObject;
+  withoutLink?: boolean;
+  big?: boolean;
 };
 
-export const VacancyCard = ({ vacancy }: VacancyCardType) => {
+export const VacancyCard = ({ vacancy, withoutLink, big }: VacancyCardType) => {
   const paymentTransformer = (
     paymentFrom: number,
     paymentTo: number,
@@ -28,10 +30,17 @@ export const VacancyCard = ({ vacancy }: VacancyCardType) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.description}>
-        <Link to={'/'+vacancy.id.toString()} className={styles.profession}>
-          {vacancy.profession}
-        </Link>
+      <div className={styles.description + (big ? ' ' + styles.big : '')}>
+        {withoutLink ? (
+          <div className={styles.profession}>{vacancy.profession}</div>
+        ) : (
+          <Link
+            to={'/' + vacancy.id.toString()}
+            className={styles.profession + ' ' + styles.link}
+          >
+            {vacancy.profession}
+          </Link>
+        )}
         <div className={styles.paymentAndType}>
           <div className={styles.payment}>
             {'з/п' +

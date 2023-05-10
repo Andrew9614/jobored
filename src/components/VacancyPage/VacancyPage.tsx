@@ -27,7 +27,7 @@ export const VacancyPage = () => {
       ) : (
         vacancyData && (
           <>
-            <VacancyCard vacancy={vacancyData} />
+            <VacancyCard withoutLink big vacancy={vacancyData} />
             <div
               className={styles.description}
               dangerouslySetInnerHTML={{ __html: vacancyData?.vacancyRichText }}
