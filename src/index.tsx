@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Favorites } from './components/Favorites/Favorits';
 import { VacanciesContainer } from './components/VacanciesContainer/VacanciesContainer';
+import { VacancyPage } from './components/VacancyPage/VacancyPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <div>Main</div>,
+      },
+      {
+        path: '/:id',
+        element: <VacancyPage />,
       },
       {
         path: '/search',

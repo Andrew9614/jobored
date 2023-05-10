@@ -65,6 +65,21 @@ type Agency = {
 export type VacancyObject = {
   id: number;
   id_client: number;
+  id_user: number;
+  code: string;
+  external_url: string;
+  refresh_vac: boolean;
+  extend_vac: boolean;
+  resumesubscription_status: boolean;
+  resumesubscription_keywords: string;
+  resumesubscription_kwc: string;
+  resumesubscription_rws: number;
+  favorite: boolean;
+  contact: string;
+  email: string;
+  url: string;
+  phone: string;
+  fax: string;
   payment_from: number;
   payment_to: number;
   date_pub_to: number;
@@ -74,11 +89,20 @@ export type VacancyObject = {
   payment: null | string;
   profession: string;
   work: string;
+  compensation: null;
+  candidat: string;
   metro: MetroStation[];
   currency: string;
+  vacancyRichText: string;
+  covid_vaccination_requirement: {
+    id: number;
+    title: string;
+  };
   moveable: boolean;
   agreement: boolean;
   anonymous: boolean;
+  is_archive: boolean;
+  is_storage: boolean;
   type_of_work: TypeOfWork;
   place_of_work: PlaceOfWork;
   education: Education;
@@ -87,7 +111,7 @@ export type VacancyObject = {
   children: Children;
   already_sent_on_vacancy: boolean;
   languages: any[];
-  driving_licence: any[];
+  driving_licence: ['A', 'B', 'C', 'D', 'E'] | null;
   catalogues: Catalogue[];
   agency: Agency;
   town: Town;
@@ -98,6 +122,11 @@ export type VacancyObject = {
   firm_name: string;
   firm_activity: string;
   link: string;
+  views_count: number;
+  resumes_all: number;
+  resumes_new: number;
+  moderation_order: string;
+  canEdit: boolean;
 };
 
 export type VacanciesSearchResultType = {

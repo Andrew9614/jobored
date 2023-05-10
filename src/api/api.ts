@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { VacanciesSearchResultType } from '../types/vacanciesSearchResultType';
+import { VacanciesSearchResultType, VacancyObject } from '../types/vacanciesSearchResultType';
 import { CatalogueType } from '../types/catalogueType';
 import { FilterType } from '../types/filterType';
 
@@ -21,6 +21,11 @@ export const jobAPI = {
         filter.payment_to
       }&keyword=${filter.keyword || ''}`
     );
+    console.log(res.data);
+    return res.data;
+  },
+  async getVacancy(id: string) {
+    const res = await superjob.get<VacancyObject>('vacancies/' + id);
     console.log(res.data);
     return res.data;
   },

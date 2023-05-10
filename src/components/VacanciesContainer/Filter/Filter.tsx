@@ -123,7 +123,8 @@ const NumberInputButtons = ({ handlersRef }: NumberInputButtonsType) => {
   return (
     <div className={styles.numberInputButtonsContainer}>
       <button onClick={() => handlersRef.current?.increment()}>
-        <img src="/images/arrowUpSmall.svg" alt="up" />
+        <img src="/images/arrowUpSmall.svg" alt="up" style={{backgroundColor:'green'}}/>
+				
       </button>
       <button onClick={() => handlersRef.current?.decrement()}>
         <img src="/images/arrowDownSmall.svg" alt="down" />

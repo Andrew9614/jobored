@@ -3,5 +3,20 @@
   height: 100%;
   display: grid;
   grid-template-rows: 84px;
-  overflow: auto;
+  grid-template-columns: 0.5fr 3fr 0.5fr;
+  grid-template-areas:
+    'header header header'
+    'left content right';
+  .content {
+    grid-area: content;
+    padding: 20px;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  #root {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'header' 'content';
+  }
 }

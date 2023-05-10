@@ -15,3 +15,13 @@ $blue100: #deecff;
 
 $mainBorderRadius: 12px;
 $mainBorder: 1px solid $grey200;
+
+@mixin mainBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background-color: white;
+  padding: 24px;
+  border: $mainBorder;
+  border-radius: $mainBorderRadius;
+}

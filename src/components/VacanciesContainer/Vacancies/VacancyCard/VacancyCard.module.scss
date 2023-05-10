@@ -1,13 +1,7 @@
 @import '../../../../vars.scss';
 
 .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  background-color: white;
-  padding: 24px;
-  border: $mainBorder;
-  border-radius: 12px;
+  @include mainBox;
   .description {
     display: flex;
     flex-direction: column;

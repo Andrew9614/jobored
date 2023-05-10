@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { VacancyObject } from '../../../../types/vacanciesSearchResultType';
 import styles from './VacancyCard.module.scss';
 
@@ -28,7 +29,9 @@ export const VacancyCard = ({ vacancy }: VacancyCardType) => {
   return (
     <div className={styles.container}>
       <div className={styles.description}>
-        <div className={styles.profession}>{vacancy.profession}</div>
+        <Link to={'/'+vacancy.id.toString()} className={styles.profession}>
+          {vacancy.profession}
+        </Link>
         <div className={styles.paymentAndType}>
           <div className={styles.payment}>
             {'з/п' +
