@@ -6,7 +6,10 @@ import {
 } from '@mantine/core';
 import styles from './Filter.module.scss';
 import { CatalogueType } from '../../../types/catalogueType';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { ArrowSmall } from '../../svgIcons/ArrowSmall';
+import { ArrowBig } from '../../svgIcons/ArrowBig';
+import { CloseIcoSmall } from '../../svgIcons/CloseIcoSmall';
 
 type FilterComponentType = {
   catalogues: CatalogueType[];
@@ -35,6 +38,12 @@ export const Filter = ({
   setPaymentFrom,
   setPaymentTo,
 }: FilterComponentType) => {
+  const refPaymentTo = useRef<NumberInputHandlers>();
+  const refPaymentFrom = useRef<NumberInputHandlers>();
+  const refSelector = useRef<HTMLInputElement>(null);
+
+  const [selectorIsActive, setSelectorIsActive] = useState(false);
+
   const handleSubmit = () => {
     onSubmit();
   };
@@ -50,58 +59,65 @@ export const Filter = ({
     if (e.key === 'Enter') onSubmit();
   };
 
-  const handlers = useRef<NumberInputHandlers>();
+  const handleSelectorIconClick = (
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (selectorIsActive) {
+      refSelector.current?.blur();
+    } else {
+      refSelector.current?.focus();
+    }
+  };
   return (
     <div className={styles.container}>
       <div className={styles.title}>
         <h1>Фильтры</h1>
         <div onClick={clearFilter} className={styles.clear}>
           Сбросить все
-          <img src="/images/closeIcoSmall.svg" alt="clear" />
+          <CloseIcoSmall />
         </div>
       </div>
+
       <div className={styles.catalogues}>
         <h4>Отрасль</h4>
         <Select
+          onFocus={() => setSelectorIsActive(true)}
+          onBlur={() => setSelectorIsActive(false)}
+          ref={refSelector}
           searchable
+          clearable
           disabled={disabled}
           data={catalogues.map((el) => el.title_trimmed)}
           placeholder="Выберете отрасль"
           value={activeCatalogue}
           onChange={(e) => setActiveCatalogue(e)}
-          clearable
-          styles={{ rightSection: { pointerEvents: 'none' } }}
+          rightSectionProps={{ onMouseDown: handleSelectorIconClick }}
           rightSection={
-            <img
-              style={{ width: '14px' }}
-              src="/images/arrowDownBig.svg"
-              alt="arrow"
-            />
+            <ArrowBig direction={selectorIsActive ? 'up' : 'down'} />
           }
         />
       </div>
       <div className={styles.payment}>
         <h4>Оклад</h4>
         <NumberInput
-          thousandsSeparator=" "
           disabled={disabled}
           value={paymentFrom}
           type="number"
-          handlersRef={handlers}
-          rightSection={<NumberInputButtons handlersRef={handlers} />}
+          handlersRef={refPaymentFrom}
+          rightSection={<NumberInputButtons handlersRef={refPaymentFrom} />}
           onChange={setPaymentFrom}
           placeholder="от"
           min={0}
           onKeyUp={handleEnter}
         />
         <NumberInput
-          thousandsSeparator=","
           disabled={disabled}
           className={styles.numberInput}
           value={paymentTo}
           type="number"
-          handlersRef={handlers}
-          rightSection={<NumberInputButtons handlersRef={handlers} />}
+          handlersRef={refPaymentTo}
+          rightSection={<NumberInputButtons handlersRef={refPaymentTo} />}
           onChange={setPaymentTo}
           placeholder="до"
           min={0}
@@ -122,13 +138,18 @@ type NumberInputButtonsType = {
 const NumberInputButtons = ({ handlersRef }: NumberInputButtonsType) => {
   return (
     <div className={styles.numberInputButtonsContainer}>
-      <button onClick={() => handlersRef.current?.increment()}>
-        <img src="/images/arrowUpSmall.svg" alt="up" style={{backgroundColor:'green'}}/>
-				
-      </button>
-      <button onClick={() => handlersRef.current?.decrement()}>
-        <img src="/images/arrowDownSmall.svg" alt="down" />
-      </button>
+      <div
+        className={styles.control}
+        onClick={() => handlersRef.current?.increment()}
+      >
+        <ArrowSmall direction="up" />
+      </div>
+      <div
+        className={styles.control}
+        onClick={() => handlersRef.current?.decrement()}
+      >
+        <ArrowSmall direction="down" />
+      </div>
     </div>
   );
 };

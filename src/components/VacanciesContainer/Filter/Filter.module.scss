@@ -21,6 +21,16 @@
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
+      transition: color 0.2s;
+      line {
+        transition: stroke 0.2s;
+      }
+      &:hover {
+        color: $blueMain500;
+        line {
+          stroke: $blueMain500;
+        }
+      }
     }
   }
   .catalogues,
@@ -28,32 +38,21 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    path {
+      transition: stroke 0.2s;
+    }
   }
-  .payment {
-    :global .mantine-NumberInput-rightSection {
-      width: unset;
-      button {
-        border: none;
-        background-color: unset;
-        width: 12px;
-        height: 12px;
-        border-radius: 2px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.2s;
-        &:hover {
-          background-color: $grey200;
-          width: 12px;
-          height: 12px;
-        }
-        svg {
-          color: #acadb9;
+  .catalogues {
+    :global .mantine-Select-rightSection {
+      cursor: pointer;
+      &:hover {
+        path {
+          stroke: $blueMain500;
         }
       }
     }
   }
+
   h1 {
     margin: 0;
     font-size: 20px;
@@ -78,4 +77,19 @@
   width: 12px;
   height: 26px;
   gap: 2px;
+	cursor: pointer;
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      path {
+        stroke: $blueMain500;
+      }
+    }
+  }
 }
