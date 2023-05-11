@@ -56,7 +56,11 @@ export const Filter = ({
   };
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') onSubmit();
+    if (e.key === 'Enter') {
+      const activeElement = document.activeElement as HTMLElement; //Костыль для скидывания фокуса с NumberInput без лишних рефов (чтлбы корректно отработало minValue)
+      activeElement.blur();  
+      onSubmit();
+    }
   };
 
   const handleSelectorIconClick = (
@@ -98,7 +102,7 @@ export const Filter = ({
           }
         />
       </div>
-      <div className={styles.payment}>
+      <div style={{ userSelect: 'none' }} className={styles.payment}>
         <h4>Оклад</h4>
         <NumberInput
           disabled={disabled}
@@ -109,6 +113,7 @@ export const Filter = ({
           onChange={setPaymentFrom}
           placeholder="от"
           min={0}
+          step={1000}
           onKeyUp={handleEnter}
         />
         <NumberInput
@@ -120,7 +125,8 @@ export const Filter = ({
           rightSection={<NumberInputButtons handlersRef={refPaymentTo} />}
           onChange={setPaymentTo}
           placeholder="до"
-          min={0}
+          min={paymentFrom ? paymentFrom : 0}
+          step={1000}
           onKeyUp={handleEnter}
         />
       </div>

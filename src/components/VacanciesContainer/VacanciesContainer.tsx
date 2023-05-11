@@ -8,8 +8,8 @@ import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
 import { FilterType } from '../../types/filterType';
 import { Vacancies } from './Vacancies/Vacancies';
-
-const COUNT = 4;
+import { EmptyState } from '../EmpyState/EmptyState';
+import { JOB_PER_PAGE } from '../../settings/settings';
 
 export const VacanciesContainer = () => {
   const [vacanciesList, setVacanciesList] =
@@ -31,7 +31,7 @@ export const VacanciesContainer = () => {
   useEffect(() => {
     console.log(filter);
     setIsLoading(true);
-    jobAPI.getVacancies(activePage, COUNT, filter).then((res) => {
+    jobAPI.getVacancies(activePage, JOB_PER_PAGE, filter).then((res) => {
       setVacanciesList(res);
       setIsLoading(false);
       console.log(res.total);
@@ -100,8 +100,10 @@ export const VacanciesContainer = () => {
             <div className={styles.loaderContainer}>
               <Loader />
             </div>
+          ) : vacanciesList?.objects.length ? (
+            <Vacancies vacancies={vacanciesList.objects} />
           ) : (
-            vacanciesList && <Vacancies vacancies={vacanciesList.objects} />
+            <EmptyState title="Кажется, мы ничего не нашли" />
           )}
         </div>
         <div className={styles.paginationContainer}>
@@ -111,9 +113,9 @@ export const VacanciesContainer = () => {
             onChange={setPage}
             total={
               vacanciesList
-                ? vacanciesList.total  < 500
-                  ? Math.ceil(vacanciesList.total / COUNT)
-                  : Math.ceil(500 / COUNT)
+                ? vacanciesList.total < 500
+                  ? Math.ceil(vacanciesList.total / JOB_PER_PAGE)
+                  : Math.ceil(500 / JOB_PER_PAGE)
                 : 0
             }
           />

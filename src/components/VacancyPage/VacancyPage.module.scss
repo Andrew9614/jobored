@@ -16,5 +16,9 @@
   .description {
     @include mainBox;
     flex-direction: column;
+		b{
+			font-size: 20px;
+			font-weight: 700;
+		}
   }
 }
