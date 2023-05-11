@@ -1,6 +1,6 @@
 import styles from './VacanciesContainer.module.scss';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { jobAPI } from '../../api/api';
 import {
   VacanciesSearchResultType,
@@ -9,56 +9,56 @@ import {
 import { Button, Loader, Pagination, TextInput } from '@mantine/core';
 import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
-import { FilterType } from '../../types/filterType';
 import { Vacancies } from './Vacancies/Vacancies';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { JOB_PER_PAGE } from '../../settings/settings';
+import { FilterContext } from '../../App';
 
 export const VacanciesContainer = () => {
+  const filterProvider = useContext(FilterContext);
   const [vacanciesList, setVacanciesList] =
     useState<VacanciesSearchResultType>();
-  const [activePage, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [catalogues, setCatalogues] = useState<CatalogueType[]>([]);
-  const [filter, setFilter] = useState<FilterType>({});
   const [favList, setFavList] = useState<VacancyObject[] | null>(null);
 
-  const [searchField, setSearchField] = useState('');
-  const [activeCatalogue, setActiveCatalogue] = useState<string | null>();
-  const [paymentFrom, setPaymentFrom] = useState<number | ''>();
-  const [paymentTo, setPaymentTo] = useState<number | ''>();
+  const [searchField, setSearchField] = useState(
+    filterProvider ? filterProvider.filter.keyword : ''
+  );
+  const [activeCatalogue, setActiveCatalogue] = useState<
+    number | null | undefined
+  >(filterProvider?.filter.catalogues);
+  const [paymentFrom, setPaymentFrom] = useState<number | '' | undefined>(
+    filterProvider?.filter.payment_from
+  );
+  const [paymentTo, setPaymentTo] = useState<number | '' | undefined>(
+    filterProvider?.filter.payment_to
+  );
 
   useEffect(() => {
-    jobAPI.getCatalogues().then((res) => setCatalogues(res));
-  }, []);
-
-  useEffect(() => {
-    console.log(filter);
     setIsLoading(true);
-    jobAPI.getVacancies(activePage, JOB_PER_PAGE, filter).then((res) => {
-      setVacanciesList(res);
-      setIsLoading(false);
-      console.log(res.total);
-    });
-  }, [activePage, filter]);
-
-  useEffect(() => {
-    jobAPI.getFavorites().then((res) => setFavList(res));
-  }, []);
+    Promise.all([
+      jobAPI.getVacancies(JOB_PER_PAGE, filterProvider?.filter).then((res) => {
+        setVacanciesList(res);
+        console.log(res.total);
+      }),
+      jobAPI.getCatalogues().then((res) => setCatalogues(res)),
+      jobAPI.getFavorites().then((res) => setFavList(res)),
+    ]).then(() => setIsLoading(false));
+  }, [filterProvider]);
 
   useEffect(() => {
     if (favList) jobAPI.setFavorites(favList);
   }, [favList]);
 
   const handleFilterSubmit = () => {
-    setFilter({
+    filterProvider?.setFilter({
+      page: 1,
       keyword: searchField,
-      catalogues: catalogues.find((el) => el.title_trimmed === activeCatalogue)
-        ?.key,
+      catalogues: activeCatalogue ? activeCatalogue : undefined,
       payment_from: paymentFrom === '' ? undefined : paymentFrom,
       payment_to: paymentTo === '' ? undefined : paymentTo,
     });
-    setPage(1);
   };
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleFilterSubmit();
@@ -66,8 +66,7 @@ export const VacanciesContainer = () => {
 
   const handleClear = () => {
     setSearchField('');
-    setFilter({});
-    setPage(1);
+    filterProvider?.setFilter({ page: 1 });
   };
   const handleFavStarClick = (vacancy: VacancyObject) => {
     if (favList) {
@@ -135,12 +134,13 @@ export const VacanciesContainer = () => {
         </div>
         <div className={styles.paginationContainer}>
           <Pagination
-					size={'sm'}
             disabled={isLoading}
-            value={activePage}
-            onChange={setPage}
+            value={filterProvider?.filter.page}
+            onChange={(e) =>
+              filterProvider?.setFilter({ ...filterProvider.filter, page: e })
+            }
             total={
-              vacanciesList
+              vacanciesList?.objects.length
                 ? vacanciesList.total < 500
                   ? Math.ceil(vacanciesList.total / JOB_PER_PAGE)
                   : Math.ceil(500 / JOB_PER_PAGE)

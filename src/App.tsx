@@ -6,6 +6,8 @@ import {
   MantineProvider,
   MantineThemeOverride,
 } from '@mantine/core';
+import { FilterType } from './types/filterType';
+import { createContext, useState } from 'react';
 
 const inputStyle: CSSObject = {
   height: '42px',
@@ -59,12 +61,20 @@ const theme: MantineThemeOverride = {
   },
 };
 
+export const FilterContext = createContext<{
+  filter: FilterType;
+  setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
+} | null>(null);
+
 function App() {
+  const [filter, setFilter] = useState<FilterType>({});
   return (
     <MantineProvider theme={theme}>
       <Header />
       <main className="content">
-        <Outlet />
+        <FilterContext.Provider value={{filter,setFilter}}>
+          <Outlet />
+        </FilterContext.Provider>
       </main>
     </MantineProvider>
   );

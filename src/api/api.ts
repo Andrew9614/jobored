@@ -16,9 +16,11 @@ const superjob = axios.create({
 });
 
 export const jobAPI = {
-  async getVacancies(page = 1, count = 20, filter: FilterType = {}) {
+  async getVacancies(count = 20, filter: FilterType = {}) {
     const res = await superjob.get<VacanciesSearchResultType>(
-      `vacancies/?page=${page - 1}&count=${count}&published=1&catalogues=${
+      `vacancies/?page=${
+        (filter.page || 1) - 1
+      }&count=${count}&published=1&catalogues=${
         filter.catalogues
       }&payment_from=${filter.payment_from}&payment_to=${
         filter.payment_to

@@ -16,11 +16,11 @@ type FilterComponentType = {
   onSubmit: () => void;
   onClear: () => void;
   disabled: boolean;
-  activeCatalogue: string | null | undefined;
+  activeCatalogue: number | null | undefined;
   paymentFrom: number | '' | undefined;
   paymentTo: number | '' | undefined;
   setActiveCatalogue: React.Dispatch<
-    React.SetStateAction<string | null | undefined>
+    React.SetStateAction<number | null | undefined>
   >;
   setPaymentFrom: React.Dispatch<React.SetStateAction<number | '' | undefined>>;
   setPaymentTo: React.Dispatch<React.SetStateAction<number | '' | undefined>>;
@@ -58,7 +58,7 @@ export const Filter = ({
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const activeElement = document.activeElement as HTMLElement; //Костыль для скидывания фокуса с NumberInput без лишних рефов (чтлбы корректно отработало min value)
-      activeElement.blur();  
+      activeElement.blur();
       onSubmit();
     }
   };
@@ -72,6 +72,13 @@ export const Filter = ({
     } else {
       refSelector.current?.focus();
     }
+  };
+
+  const findCatalogueTitleByKey = () => {
+    return catalogues.find((el) => el.key === activeCatalogue)?.title_trimmed;
+  };
+  const findCatalogueKeyByTitle = (title: string | null) => {
+    return catalogues.find((el) => el.title_trimmed === title)?.key;
   };
   return (
     <div className={styles.container}>
@@ -94,8 +101,8 @@ export const Filter = ({
           disabled={disabled}
           data={catalogues.map((el) => el.title_trimmed)}
           placeholder="Выберете отрасль"
-          value={activeCatalogue}
-          onChange={(e) => setActiveCatalogue(e)}
+          value={findCatalogueTitleByKey()}
+          onChange={(e) => setActiveCatalogue(findCatalogueKeyByTitle(e))}
           rightSectionProps={{ onMouseDown: handleSelectorIconClick }}
           rightSection={
             <ArrowBig direction={selectorIsActive ? 'up' : 'down'} />

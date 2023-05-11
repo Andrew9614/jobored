@@ -45,7 +45,7 @@ $maxWidth700: 100%;
 
 @mixin defaultContainer {
   height: 100%;
-  max-width: $maxWidthDesktop;
+  width: $maxWidthDesktop;
   display: flex;
   flex-direction: column;
   @media (max-width: 1300px) {
