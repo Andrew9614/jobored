@@ -6,33 +6,12 @@
   grid-template-areas:
     'header'
     'content';
-  justify-items: center;
+  overflow: auto;
   .content {
-    max-width: 54%;
     grid-area: content;
+    display: flex;
+    justify-content: center;
     padding: 20px;
     padding-bottom: 0;
-  }
-}
-
-@media (max-width: 1300px) {
-  #root {
-    .content{
-			max-width: 70%;
-		}
-  }
-}
-@media (max-width: 1000px) {
-  #root {
-    .content{
-			max-width: 80%;
-		}
-  }
-}
-@media (max-width: 700px) {
-  #root {
-    .content{
-			max-width: unset;
-		}
   }
 }

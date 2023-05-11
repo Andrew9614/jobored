@@ -15,6 +15,10 @@ $blue100: #deecff;
 
 $mainBorderRadius: 12px;
 $mainBorder: 1px solid $grey200;
+$maxWidthDesktop: 54%;
+$maxWidth1300: 70%;
+$maxWidth1000: 85%;
+$maxWidth700: 100%;
 
 @mixin mainBox {
   display: flex;
@@ -27,14 +31,36 @@ $mainBorder: 1px solid $grey200;
 }
 
 @mixin paginationContainer {
-	position: sticky;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	margin-top: 5px;
-	padding: 10px;
-	box-sizing: border-box;
-	background-color: $grey100;
+  position: sticky;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: $grey100;
+}
+
+@mixin defaultContainer {
+  height: 100%;
+  max-width: $maxWidthDesktop;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 1300px) {
+    & {
+      max-width: $maxWidth1300;
+    }
+  }
+  @media (max-width: 1000px) {
+    & {
+      max-width: $maxWidth1000;
+    }
+  }
+  @media (max-width: 700px) {
+    & {
+      max-width: $maxWidth700;
+    }
+  }
 }

@@ -135,6 +135,7 @@ export const VacanciesContainer = () => {
         </div>
         <div className={styles.paginationContainer}>
           <Pagination
+					size={'sm'}
             disabled={isLoading}
             value={activePage}
             onChange={setPage}
