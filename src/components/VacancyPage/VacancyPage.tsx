@@ -27,7 +27,7 @@ export const VacancyPage = () => {
       ) : (
         vacancyData && (
           <>
-            <VacancyCard withoutLink big vacancy={vacancyData} />
+            <VacancyCard onFavStarClick={()=>{}} withoutLink big vacancy={vacancyData} />
             <div
               className={styles.description}
               dangerouslySetInnerHTML={{ __html: vacancyData?.vacancyRichText }}

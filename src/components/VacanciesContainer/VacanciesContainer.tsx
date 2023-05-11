@@ -2,13 +2,16 @@ import styles from './VacanciesContainer.module.scss';
 
 import { useEffect, useState } from 'react';
 import { jobAPI } from '../../api/api';
-import { VacanciesSearchResultType } from '../../types/vacanciesSearchResultType';
+import {
+  VacanciesSearchResultType,
+  VacancyObject,
+} from '../../types/vacanciesSearchResultType';
 import { Button, Loader, Pagination, TextInput } from '@mantine/core';
 import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
 import { FilterType } from '../../types/filterType';
 import { Vacancies } from './Vacancies/Vacancies';
-import { EmptyState } from '../EmpyState/EmptyState';
+import { EmptyState } from '../EmptyState/EmptyState';
 import { JOB_PER_PAGE } from '../../settings/settings';
 
 export const VacanciesContainer = () => {
@@ -18,6 +21,7 @@ export const VacanciesContainer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [catalogues, setCatalogues] = useState<CatalogueType[]>([]);
   const [filter, setFilter] = useState<FilterType>({});
+  const [favList, setFavList] = useState<VacancyObject[] | null>(null);
 
   const [searchField, setSearchField] = useState('');
   const [activeCatalogue, setActiveCatalogue] = useState<string | null>();
@@ -38,6 +42,14 @@ export const VacanciesContainer = () => {
     });
   }, [activePage, filter]);
 
+  useEffect(() => {
+    jobAPI.getFavorites().then((res) => setFavList(res));
+  }, []);
+
+  useEffect(() => {
+    if (favList) jobAPI.setFavorites(favList);
+  }, [favList]);
+
   const handleFilterSubmit = () => {
     setFilter({
       keyword: searchField,
@@ -56,6 +68,17 @@ export const VacanciesContainer = () => {
     setSearchField('');
     setFilter({});
     setPage(1);
+  };
+  const handleFavStarClick = (vacancy: VacancyObject) => {
+    if (favList) {
+      if (favList?.find((el) => el.id === vacancy.id)) {
+        setFavList(favList.filter((el) => el.id !== vacancy.id));
+      } else {
+        setFavList([...favList, vacancy]);
+      }
+    } else {
+      setFavList([vacancy]);
+    }
   };
   return (
     <div className={styles.container}>
@@ -101,7 +124,11 @@ export const VacanciesContainer = () => {
               <Loader />
             </div>
           ) : vacanciesList?.objects.length ? (
-            <Vacancies vacancies={vacanciesList.objects} />
+            <Vacancies
+              favList={favList}
+              handleFavStarClick={handleFavStarClick}
+              vacancies={vacanciesList.objects}
+            />
           ) : (
             <EmptyState title="Кажется, мы ничего не нашли" />
           )}

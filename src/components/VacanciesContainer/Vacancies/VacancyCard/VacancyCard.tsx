@@ -1,14 +1,23 @@
 import { Link } from 'react-router-dom';
 import { VacancyObject } from '../../../../types/vacanciesSearchResultType';
 import styles from './VacancyCard.module.scss';
+import { FavStar } from '../../../svgIcons/FavStart';
 
 type VacancyCardType = {
   vacancy: VacancyObject;
-  withoutLink?: boolean;
   big?: boolean;
+  withoutLink?: boolean;
+  isFavorite?: boolean;
+  onFavStarClick: (vacancy: VacancyObject) => void;
 };
 
-export const VacancyCard = ({ vacancy, withoutLink, big }: VacancyCardType) => {
+export const VacancyCard = ({
+  vacancy,
+  withoutLink,
+  big,
+  onFavStarClick,
+  isFavorite,
+}: VacancyCardType) => {
   const paymentTransformer = (
     paymentFrom: number,
     paymentTo: number,
@@ -58,7 +67,10 @@ export const VacancyCard = ({ vacancy, withoutLink, big }: VacancyCardType) => {
           {vacancy.town.title}
         </div>
       </div>
-      <img className={styles.favStar} src="/images/favStar.svg" alt="favStar" />
+      <FavStar
+        onClick={() => onFavStarClick(vacancy)}
+        className={styles.favStar + (isFavorite ? ' ' + styles.active : '')}
+      />
     </div>
   );
 };

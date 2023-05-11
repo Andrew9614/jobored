@@ -2,6 +2,7 @@
 
 .container {
   height: 100%;
+	//max-width: 50%;
   display: grid;
   grid-template-columns: 1fr 2.5fr;
   gap: 28px;
@@ -42,18 +43,8 @@
         }
       }
     }
-
     .paginationContainer {
-      position: sticky;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      margin-top: 5px;
-      padding: 10px;
-      box-sizing: border-box;
-      background-color: $grey100;
+      @include paginationContainer;
     }
   }
 }

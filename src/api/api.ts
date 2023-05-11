@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { VacanciesSearchResultType, VacancyObject } from '../types/vacanciesSearchResultType';
+import {
+  VacanciesSearchResultType,
+  VacancyObject,
+} from '../types/vacanciesSearchResultType';
 import { CatalogueType } from '../types/catalogueType';
 import { FilterType } from '../types/filterType';
 
@@ -33,5 +36,23 @@ export const jobAPI = {
     const res = await superjob.get<CatalogueType[]>(`catalogues`);
     console.log(res.data);
     return res.data;
+  },
+  async getFavorites() {
+    const res = localStorage.getItem('favList');
+    if (res) return JSON.parse(res) as VacancyObject[];
+    return null;
+  },
+  async setFavorites(item: VacancyObject[] | null) {
+    localStorage.setItem('favList', JSON.stringify(item));
+  },
+  async cleanFavorites() {
+    let fav = localStorage.getItem('favList');
+    if (fav)
+      localStorage.setItem(
+        'favList',
+        JSON.stringify(
+          (JSON.parse(fav) as VacancyObject[]).filter((el) => !el.isPending)
+        )
+      );
   },
 };

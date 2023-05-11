@@ -63,6 +63,7 @@ type Agency = {
 };
 
 export type VacancyObject = {
+  isPending?: boolean;
   id: number;
   id_client: number;
   id_user: number;

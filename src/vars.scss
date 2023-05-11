@@ -25,3 +25,16 @@ $mainBorder: 1px solid $grey200;
   border: $mainBorder;
   border-radius: $mainBorderRadius;
 }
+
+@mixin paginationContainer {
+	position: sticky;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-top: 5px;
+	padding: 10px;
+	box-sizing: border-box;
+	background-color: $grey100;
+}
