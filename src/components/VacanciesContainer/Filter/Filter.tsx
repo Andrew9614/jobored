@@ -6,24 +6,17 @@ import {
 } from '@mantine/core';
 import styles from './Filter.module.scss';
 import { CatalogueType } from '../../../types/catalogueType';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { ArrowSmall } from '../../svgIcons/ArrowSmall';
 import { ArrowBig } from '../../svgIcons/ArrowBig';
 import { CloseIcoSmall } from '../../svgIcons/CloseIcoSmall';
+import { FilterContext } from '../../../App';
 
 type FilterComponentType = {
   catalogues: CatalogueType[];
   onSubmit: () => void;
   onClear: () => void;
   disabled: boolean;
-  activeCatalogue: string | null | undefined;
-  paymentFrom: number | '' | undefined;
-  paymentTo: number | '' | undefined;
-  setActiveCatalogue: React.Dispatch<
-    React.SetStateAction<string | null | undefined>
-  >;
-  setPaymentFrom: React.Dispatch<React.SetStateAction<number | '' | undefined>>;
-  setPaymentTo: React.Dispatch<React.SetStateAction<number | '' | undefined>>;
 };
 
 export const Filter = ({
@@ -31,13 +24,9 @@ export const Filter = ({
   onSubmit,
   onClear,
   disabled,
-  activeCatalogue,
-  paymentFrom,
-  paymentTo,
-  setActiveCatalogue,
-  setPaymentFrom,
-  setPaymentTo,
 }: FilterComponentType) => {
+  const filterContext = useContext(FilterContext);
+
   const refPaymentTo = useRef<NumberInputHandlers>();
   const refPaymentFrom = useRef<NumberInputHandlers>();
   const refSelector = useRef<HTMLInputElement>(null);
@@ -49,16 +38,16 @@ export const Filter = ({
   };
 
   const clearFilter = () => {
-    setActiveCatalogue(null);
-    setPaymentFrom('');
-    setPaymentTo('');
+    filterContext?.setActiveCatalogue(null);
+    filterContext?.setPaymentFrom('');
+    filterContext?.setPaymentTo('');
     onClear();
   };
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const activeElement = document.activeElement as HTMLElement; //Костыль для скидывания фокуса с NumberInput без лишних рефов (чтлбы корректно отработало min value)
-      activeElement.blur();  
+      activeElement.blur();
       onSubmit();
     }
   };
@@ -72,6 +61,14 @@ export const Filter = ({
     } else {
       refSelector.current?.focus();
     }
+  };
+
+  const findCatalogueTitleByKey = () => {
+    return catalogues.find((el) => el.key === filterContext?.activeCatalogue)
+      ?.title_trimmed;
+  };
+  const findCatalogueKeyByTitle = (title: string | null) => {
+    return catalogues.find((el) => el.title_trimmed === title)?.key;
   };
   return (
     <div className={styles.container}>
@@ -94,8 +91,10 @@ export const Filter = ({
           disabled={disabled}
           data={catalogues.map((el) => el.title_trimmed)}
           placeholder="Выберете отрасль"
-          value={activeCatalogue}
-          onChange={(e) => setActiveCatalogue(e)}
+          value={findCatalogueTitleByKey()}
+          onChange={(e) =>
+            filterContext?.setActiveCatalogue(findCatalogueKeyByTitle(e))
+          }
           rightSectionProps={{ onMouseDown: handleSelectorIconClick }}
           rightSection={
             <ArrowBig direction={selectorIsActive ? 'up' : 'down'} />
@@ -106,11 +105,11 @@ export const Filter = ({
         <h4>Оклад</h4>
         <NumberInput
           disabled={disabled}
-          value={paymentFrom}
+          value={filterContext?.paymentFrom}
           type="number"
           handlersRef={refPaymentFrom}
           rightSection={<NumberInputButtons handlersRef={refPaymentFrom} />}
-          onChange={setPaymentFrom}
+          onChange={filterContext?.setPaymentFrom}
           placeholder="от"
           min={0}
           step={1000}
@@ -119,13 +118,13 @@ export const Filter = ({
         <NumberInput
           disabled={disabled}
           className={styles.numberInput}
-          value={paymentTo}
+          value={filterContext?.paymentTo}
           type="number"
           handlersRef={refPaymentTo}
           rightSection={<NumberInputButtons handlersRef={refPaymentTo} />}
-          onChange={setPaymentTo}
+          onChange={filterContext?.setPaymentTo}
           placeholder="до"
-          min={paymentFrom ? paymentFrom : 0}
+          min={filterContext?.paymentFrom ? filterContext?.paymentFrom : 0}
           step={1000}
           onKeyUp={handleEnter}
         />

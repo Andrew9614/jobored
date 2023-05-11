@@ -1,6 +1,6 @@
 import styles from './VacanciesContainer.module.scss';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { jobAPI } from '../../api/api';
 import {
   VacanciesSearchResultType,
@@ -13,34 +13,33 @@ import { FilterType } from '../../types/filterType';
 import { Vacancies } from './Vacancies/Vacancies';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { JOB_PER_PAGE } from '../../settings/settings';
+import { FilterContext } from '../../App';
 
 export const VacanciesContainer = () => {
+  const filterContext = useContext(FilterContext);
+
   const [vacanciesList, setVacanciesList] =
     useState<VacanciesSearchResultType>();
-  const [activePage, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [catalogues, setCatalogues] = useState<CatalogueType[]>([]);
   const [filter, setFilter] = useState<FilterType>({});
   const [favList, setFavList] = useState<VacancyObject[] | null>(null);
-
-  const [searchField, setSearchField] = useState('');
-  const [activeCatalogue, setActiveCatalogue] = useState<string | null>();
-  const [paymentFrom, setPaymentFrom] = useState<number | ''>();
-  const [paymentTo, setPaymentTo] = useState<number | ''>();
 
   useEffect(() => {
     jobAPI.getCatalogues().then((res) => setCatalogues(res));
   }, []);
 
   useEffect(() => {
-    console.log(filter);
     setIsLoading(true);
-    jobAPI.getVacancies(activePage, JOB_PER_PAGE, filter).then((res) => {
-      setVacanciesList(res);
-      setIsLoading(false);
-      console.log(res.total);
-    });
-  }, [activePage, filter]);
+    jobAPI
+      .getVacancies(filterContext?.activePage, JOB_PER_PAGE, buildFilter())
+      .then((res) => {
+        setVacanciesList(res);
+        setIsLoading(false);
+        console.log(res.total);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, filterContext?.activePage]);
 
   useEffect(() => {
     jobAPI.getFavorites().then((res) => setFavList(res));
@@ -50,24 +49,34 @@ export const VacanciesContainer = () => {
     if (favList) jobAPI.setFavorites(favList);
   }, [favList]);
 
+  function buildFilter(): FilterType {
+    console.log('object');
+    return {
+      keyword: filterContext?.searchField,
+      catalogues: filterContext?.activeCatalogue
+        ? filterContext.activeCatalogue
+        : undefined,
+      payment_from:
+        filterContext?.paymentFrom === ''
+          ? undefined
+          : filterContext?.paymentFrom,
+      payment_to:
+        filterContext?.paymentTo === '' ? undefined : filterContext?.paymentTo,
+    };
+  }
+
   const handleFilterSubmit = () => {
-    setFilter({
-      keyword: searchField,
-      catalogues: catalogues.find((el) => el.title_trimmed === activeCatalogue)
-        ?.key,
-      payment_from: paymentFrom === '' ? undefined : paymentFrom,
-      payment_to: paymentTo === '' ? undefined : paymentTo,
-    });
-    setPage(1);
+    setFilter(buildFilter());
+    filterContext?.setPage(1);
   };
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleFilterSubmit();
   };
 
   const handleClear = () => {
-    setSearchField('');
+    filterContext?.setSearchField('');
     setFilter({});
-    setPage(1);
+    filterContext?.setPage(1);
   };
   const handleFavStarClick = (vacancy: VacancyObject) => {
     if (favList) {
@@ -84,12 +93,6 @@ export const VacanciesContainer = () => {
     <div className={styles.container}>
       <div className={styles.filter}>
         <Filter
-          activeCatalogue={activeCatalogue}
-          paymentFrom={paymentFrom}
-          paymentTo={paymentTo}
-          setActiveCatalogue={setActiveCatalogue}
-          setPaymentFrom={setPaymentFrom}
-          setPaymentTo={setPaymentTo}
           disabled={isLoading}
           onClear={handleClear}
           onSubmit={handleFilterSubmit}
@@ -101,10 +104,10 @@ export const VacanciesContainer = () => {
           <TextInput
             disabled={isLoading}
             className={styles.search}
-            value={searchField}
+            value={filterContext?.searchField}
             placeholder="Введите название вакансии"
             onChange={(e) => {
-              setSearchField(e.currentTarget.value);
+              filterContext?.setSearchField(e.currentTarget.value);
             }}
             onKeyUp={handleEnter}
             icon={<img src="/images/search.svg" alt="search" />}
@@ -135,10 +138,10 @@ export const VacanciesContainer = () => {
         </div>
         <div className={styles.paginationContainer}>
           <Pagination
-					size={'sm'}
+            size={'sm'}
             disabled={isLoading}
-            value={activePage}
-            onChange={setPage}
+            value={filterContext?.activePage}
+            onChange={filterContext?.setPage}
             total={
               vacanciesList
                 ? vacanciesList.total < 500

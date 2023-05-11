@@ -6,6 +6,7 @@ import {
   MantineProvider,
   MantineThemeOverride,
 } from '@mantine/core';
+import { createContext, useState } from 'react';
 
 const inputStyle: CSSObject = {
   height: '42px',
@@ -59,12 +60,48 @@ const theme: MantineThemeOverride = {
   },
 };
 
+export const FilterContext = createContext<{
+  activePage: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  searchField: string;
+  setSearchField: React.Dispatch<React.SetStateAction<string>>;
+  activeCatalogue: number | null | undefined;
+  setActiveCatalogue: React.Dispatch<
+    React.SetStateAction<number | null | undefined>
+  >;
+  paymentFrom: number | '' | undefined;
+  setPaymentFrom: React.Dispatch<React.SetStateAction<number | '' | undefined>>;
+  paymentTo: number | '' | undefined;
+  setPaymentTo: React.Dispatch<React.SetStateAction<number | '' | undefined>>;
+} | null>(null);
+
 function App() {
+  const [activePage, setPage] = useState(1);
+  const [searchField, setSearchField] = useState('');
+  const [activeCatalogue, setActiveCatalogue] = useState<number | null>();
+  const [paymentFrom, setPaymentFrom] = useState<number | ''>();
+  const [paymentTo, setPaymentTo] = useState<number | ''>();
+
   return (
     <MantineProvider theme={theme}>
       <Header />
       <main className="content">
-        <Outlet />
+        <FilterContext.Provider
+          value={{
+            activePage,
+            setPage,
+            searchField,
+            setSearchField,
+            activeCatalogue,
+            setActiveCatalogue,
+            paymentFrom,
+            setPaymentFrom,
+            paymentTo,
+            setPaymentTo,
+          }}
+        >
+          <Outlet />
+        </FilterContext.Provider>
       </main>
     </MantineProvider>
   );
