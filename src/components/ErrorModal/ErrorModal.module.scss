@@ -1,0 +1,10 @@
+.modal {
+  :global .mantine-Modal-inner {
+    box-sizing: border-box;
+  }
+	.alertContainer{
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+	}
+}

@@ -4,16 +4,33 @@ import { VacancyObject } from '../../types/vacanciesSearchResultType';
 import { jobAPI } from '../../api/api';
 import { VacancyCard } from '../VacancyCard/VacancyCard';
 import styles from './Favorites.module.scss';
-import { Pagination } from '@mantine/core';
+import { Loader, Pagination } from '@mantine/core';
 import { JOB_PER_PAGE } from '../../settings/settings';
+import { ErrorModal } from '../ErrorModal/ErrorModal';
+import { ErrorType } from '../../types/errorType';
+import { useNavigate } from 'react-router-dom';
 
 export const Favorites = () => {
+	const navigate = useNavigate();
+
   const [favList, setFavList] = useState<VacancyObject[] | null>(null);
   const [favPage, setFavPage] = useState<VacancyObject[] | null>(null);
   const [activePage, setActivePage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [modalError, setModalError] = useState<ErrorType | null>(null);
 
   useEffect(() => {
-    jobAPI.getFavorites().then((res) => setFavList(res));
+    setIsLoading(true);
+    jobAPI
+      .getFavorites()
+      .then((res) => {
+        setFavList(res);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setModalError(error);
+        setIsLoading(false);
+      });
   }, []);
 
   useEffect(
@@ -56,32 +73,44 @@ export const Favorites = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.favWrapper}>
-        {favPage?.length ? (
-          favPage.map((el) => (
-            <div key={el.id} className={styles.vacancyContainer}>
-              <div className={el.isPending ? styles.pendingFilter : ''}></div>
-              <VacancyCard
-                onFavStarClick={handleFavStarClick}
-                vacancy={el}
-                isFavorite={!el.isPending}
-              />
+    <>
+      <ErrorModal
+        error={modalError}
+        onClose={() => setModalError(null)}
+        open={!!modalError}
+        submit={() => navigate(0)}
+      />
+      <div className={styles.container}>
+        <div className={styles.favWrapper}>
+          {isLoading ? (
+            <div className={styles.loaderContainer}>
+              <Loader />
             </div>
-          ))
-        ) : (
-          <EmptyState title="Упс, здесь еще ничего нет!" withRedirectButton />
-        )}
+          ) : favPage?.length ? (
+            favPage.map((el) => (
+              <div key={el.id} className={styles.vacancyContainer}>
+                <div className={el.isPending ? styles.pendingFilter : ''}></div>
+                <VacancyCard
+                  onFavStarClick={handleFavStarClick}
+                  vacancy={el}
+                  isFavorite={!el.isPending}
+                />
+              </div>
+            ))
+          ) : (
+            <EmptyState title="Упс, здесь еще ничего нет!" withRedirectButton />
+          )}
+        </div>
+        <div className={styles.paginationContainer}>
+          {favList && (
+            <Pagination
+              value={activePage}
+              onChange={setActivePage}
+              total={Math.ceil(favList.length / JOB_PER_PAGE)}
+            />
+          )}
+        </div>
       </div>
-      <div className={styles.paginationContainer}>
-        {favList && (
-          <Pagination
-            value={activePage}
-            onChange={setActivePage}
-            total={Math.ceil(favList.length / JOB_PER_PAGE)}
-          />
-        )}
-      </div>
-    </div>
+    </>
   );
 };

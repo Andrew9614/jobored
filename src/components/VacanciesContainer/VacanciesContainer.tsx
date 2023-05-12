@@ -6,13 +6,21 @@ import {
   VacanciesSearchResultType,
   VacancyObject,
 } from '../../types/vacanciesSearchResultType';
-import { Button, Loader, Modal, Pagination, TextInput } from '@mantine/core';
+import {
+  Button,
+  Loader,
+  Modal,
+  Pagination,
+  TextInput,
+} from '@mantine/core';
 import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
 import { Vacancies } from './Vacancies/Vacancies';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { JOB_PER_PAGE } from '../../settings/settings';
 import { FilterContext } from '../../App';
+import { ErrorType } from '../../types/errorType';
+import { ErrorModal } from '../ErrorModal/ErrorModal';
 
 export const VacanciesContainer = () => {
   const filterProvider = useContext(FilterContext);
@@ -22,6 +30,7 @@ export const VacanciesContainer = () => {
   const [catalogues, setCatalogues] = useState<CatalogueType[]>([]);
   const [favList, setFavList] = useState<VacancyObject[] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalError, setModalError] = useState<ErrorType | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
 
   const [searchField, setSearchField] = useState(
@@ -41,12 +50,30 @@ export const VacanciesContainer = () => {
     setIsModalOpen(false);
     setIsLoading(true);
     Promise.all([
-      jobAPI.getVacancies(JOB_PER_PAGE, filterProvider?.filter).then((res) => {
-        setVacanciesList(res);
-        console.log(res.total);
-      }),
-      jobAPI.getCatalogues().then((res) => setCatalogues(res)),
-      jobAPI.getFavorites().then((res) => setFavList(res)),
+      jobAPI
+        .getVacancies(JOB_PER_PAGE, filterProvider?.filter)
+        .then((res) => {
+          setVacanciesList(res);
+          console.log(res);
+        })
+        .catch((error) => {
+          setModalError(error);
+          setIsLoading(false);
+        }),
+      jobAPI
+        .getCatalogues()
+        .then((res) => setCatalogues(res))
+        .catch((error) => {
+          setModalError(error);
+          setIsLoading(false);
+        }),
+      jobAPI
+        .getFavorites()
+        .then((res) => setFavList(res))
+        .catch((error) => {
+          setModalError(error);
+          setIsLoading(false);
+        }),
     ]).then(() => setIsLoading(false));
   }, [filterProvider]);
 
@@ -94,67 +121,74 @@ export const VacanciesContainer = () => {
     }
   };
   return (
-    <div className={styles.container}>
-      <div className={styles.filter}>
-        <FilterWrapper
-          onOpen={() => setIsModalOpen(true)}
-          isModalOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          isMobile={isMobile}
-          disabled={isLoading}
-        >
-          <Filter
-            activeCatalogue={activeCatalogue}
-            paymentFrom={paymentFrom}
-            paymentTo={paymentTo}
-            setActiveCatalogue={setActiveCatalogue}
-            setPaymentFrom={setPaymentFrom}
-            setPaymentTo={setPaymentTo}
+    <>
+      <ErrorModal
+        error={modalError}
+        onClose={() => setModalError(null)}
+        open={!!modalError && !vacanciesList?.objects.length}
+        submit={() => handleFilterSubmit()}
+      />
+      <div className={styles.container}>
+        <div className={styles.filter}>
+          <FilterWrapper
+            onOpen={() => setIsModalOpen(true)}
+            isModalOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            isMobile={isMobile}
             disabled={isLoading}
-            onClear={handleClear}
-            onSubmit={handleFilterSubmit}
-            catalogues={catalogues}
-          />
-        </FilterWrapper>
-      </div>
-      <div className={styles.vacanciesWrapper}>
-        <div className={styles.vacanciesContainer}>
-          <TextInput
-            disabled={isLoading}
-            className={styles.search}
-            value={searchField}
-            placeholder="Введите название вакансии"
-            onChange={(e) => {
-              setSearchField(e.currentTarget.value);
-            }}
-            onKeyUp={handleEnter}
-            icon={<img src="/images/search.svg" alt="search" />}
-            rightSection={
-              <Button
-                disabled={isLoading}
-                onClick={handleFilterSubmit}
-                className={styles.searchButton}
-              >
-                Поиск
-              </Button>
-            }
-          />
-
-          {isLoading ? (
-            <div className={styles.loaderContainer}>
-              <Loader />
-            </div>
-          ) : vacanciesList?.objects.length ? (
-            <Vacancies
-              favList={favList}
-              handleFavStarClick={handleFavStarClick}
-              vacancies={vacanciesList.objects}
+          >
+            <Filter
+              activeCatalogue={activeCatalogue}
+              paymentFrom={paymentFrom}
+              paymentTo={paymentTo}
+              setActiveCatalogue={setActiveCatalogue}
+              setPaymentFrom={setPaymentFrom}
+              setPaymentTo={setPaymentTo}
+              disabled={isLoading}
+              onClear={handleClear}
+              onSubmit={handleFilterSubmit}
+              catalogues={catalogues}
             />
-          ) : (
-            <EmptyState title="Кажется, мы ничего не нашли" />
-          )}
+          </FilterWrapper>
         </div>
-        {vacanciesList && (
+        <div className={styles.vacanciesWrapper}>
+          <div className={styles.vacanciesContainer}>
+            <TextInput
+              disabled={isLoading}
+              className={styles.search}
+              value={searchField ? searchField : ''}
+              placeholder="Введите название вакансии"
+              onChange={(e) => {
+                setSearchField(e.currentTarget.value);
+              }}
+              onKeyUp={handleEnter}
+              icon={<img src="/images/search.svg" alt="search" />}
+              rightSection={
+                <Button
+                  disabled={isLoading}
+                  onClick={handleFilterSubmit}
+                  className={styles.searchButton}
+                >
+                  Поиск
+                </Button>
+              }
+            />
+
+            {isLoading ? (
+              <div className={styles.loaderContainer}>
+                <Loader />
+              </div>
+            ) : vacanciesList?.objects.length ? (
+              <Vacancies
+                favList={favList}
+                handleFavStarClick={handleFavStarClick}
+                vacancies={vacanciesList.objects}
+              />
+            ) : (
+              <EmptyState title="Кажется, мы ничего не нашли" />
+            )}
+          </div>
+          {vacanciesList && (
             <div className={styles.paginationContainer}>
               <Pagination
                 disabled={isLoading}
@@ -174,8 +208,9 @@ export const VacanciesContainer = () => {
               />
             </div>
           )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Favorites } from './components/Favorites/Favorits';
 import { VacanciesContainer } from './components/VacanciesContainer/VacanciesContainer';
 import { VacancyPage } from './components/VacancyPage/VacancyPage';
+import { EmptyState } from './components/EmptyState/EmptyState';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/favorites',
         element: <Favorites />,
+      },
+      {
+        path: '/404',
+        element: <EmptyState title="Такой страницы не существует" withRedirectButton />,
       },
     ],
   },

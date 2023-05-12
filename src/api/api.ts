@@ -1,10 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import {
   VacanciesSearchResultType,
   VacancyObject,
 } from '../types/vacanciesSearchResultType';
 import { CatalogueType } from '../types/catalogueType';
 import { FilterType } from '../types/filterType';
+import { ErrorType } from '../types/errorType';
 
 const superjob = axios.create({
   baseURL: 'https://startup-summer-2023-proxy.onrender.com/2.0/',
@@ -15,28 +16,58 @@ const superjob = axios.create({
   },
 });
 
+const onError = (
+  error: AxiosError<{ error: { code: number; message: string } }>
+): ErrorType => {
+  console.log(error);
+  if (error.response?.data.error) {
+    return {
+      code: error.response.status + '',
+      message: error.response.data.error.message,
+    };
+  }
+  if (error.response) {
+    return { code: error.response.status + '', message: error.message };
+  }
+  return { code: error.code, message: 'Что-то пошло не так' };
+};
+
 export const jobAPI = {
   async getVacancies(count = 20, filter: FilterType = {}) {
-    const res = await superjob.get<VacanciesSearchResultType>(
-      `vacancies/?page=${
-        (filter.page || 1) - 1
-      }&count=${count}&published=1&catalogues=${
-        filter.catalogues
-      }&payment_from=${filter.payment_from}&payment_to=${
-        filter.payment_to
-      }&keyword=${filter.keyword || ''}`
-    );
+    const res = await superjob
+      .get<VacanciesSearchResultType>(
+        `vacancies/?page=${
+          (filter.page || 1) - 1
+        }&count=${count}&published=1&catalogues=${
+          filter.catalogues
+        }&payment_from=${filter.payment_from}&payment_to=${
+          filter.payment_to
+        }&keyword=${filter.keyword || ''}`
+      )
+      .catch((error) => {
+        console.log(error);
+        throw onError(error);
+      });
     console.log(res.data);
     return res.data;
   },
   async getVacancy(id: string) {
-    const res = await superjob.get<VacancyObject>('vacancies/' + id);
+    const res = await superjob
+      .get<VacancyObject>('vacancies/' + id)
+      .catch((error) => {
+        console.log(error);
+        throw onError(error);
+      });
     console.log(res.data);
     return res.data;
   },
   async getCatalogues() {
-    const res = await superjob.get<CatalogueType[]>(`catalogues`);
-    console.log(res.data);
+    const res = await superjob
+      .get<CatalogueType[]>(`catalogues`)
+      .catch((error) => {
+        console.log(error);
+        throw onError(error);
+      });
     return res.data;
   },
   async getFavorites() {
