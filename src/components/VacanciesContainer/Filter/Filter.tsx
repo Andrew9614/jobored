@@ -93,6 +93,7 @@ export const Filter = ({
       <div className={styles.catalogues}>
         <h4>Отрасль</h4>
         <Select
+				dropdownPosition='bottom'
           onFocus={() => setSelectorIsActive(true)}
           onBlur={() => setSelectorIsActive(false)}
           ref={refSelector}

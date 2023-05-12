@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { jobAPI } from '../../api/api';
 import { VacancyObject } from '../../types/vacanciesSearchResultType';
-import { VacancyCard } from '../VacanciesContainer/Vacancies/VacancyCard/VacancyCard';
+import { VacancyCard } from '../VacancyCard/VacancyCard';
 import { Loader } from '@mantine/core';
 import styles from './VacancyPage.module.scss';
 

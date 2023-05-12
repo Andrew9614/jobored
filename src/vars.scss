@@ -41,6 +41,11 @@ $maxWidth700: 100%;
   padding: 10px;
   box-sizing: border-box;
   background-color: $grey100;
+	@media (max-width: 700px) {
+    & {
+      position: fixed;
+    }
+  }
 }
 
 @mixin defaultContainer {
@@ -50,17 +55,17 @@ $maxWidth700: 100%;
   flex-direction: column;
   @media (max-width: 1300px) {
     & {
-      max-width: $maxWidth1300;
+      width: $maxWidth1300;
     }
   }
   @media (max-width: 1000px) {
     & {
-      max-width: $maxWidth1000;
+      width: $maxWidth1000;
     }
   }
   @media (max-width: 700px) {
     & {
-      max-width: $maxWidth700;
+      width: $maxWidth700;
     }
   }
 }

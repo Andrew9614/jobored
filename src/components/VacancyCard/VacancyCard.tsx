@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { VacancyObject } from '../../../../types/vacanciesSearchResultType';
+import { VacancyObject } from '../../types/vacanciesSearchResultType';
 import styles from './VacancyCard.module.scss';
-import { FavStar } from '../../../svgIcons/FavStart';
+import { FavStar } from '../svgIcons/FavStart';
 
 type VacancyCardType = {
   vacancy: VacancyObject;

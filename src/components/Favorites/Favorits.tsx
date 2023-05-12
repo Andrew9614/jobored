@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { VacancyObject } from '../../types/vacanciesSearchResultType';
 import { jobAPI } from '../../api/api';
-import { VacancyCard } from '../VacanciesContainer/Vacancies/VacancyCard/VacancyCard';
+import { VacancyCard } from '../VacancyCard/VacancyCard';
 import styles from './Favorites.module.scss';
 import { Pagination } from '@mantine/core';
 import { JOB_PER_PAGE } from '../../settings/settings';
@@ -74,15 +74,13 @@ export const Favorites = () => {
         )}
       </div>
       <div className={styles.paginationContainer}>
-        <Pagination
-          value={activePage}
-          onChange={setActivePage}
-          total={
-            favList?.length && favList.length > JOB_PER_PAGE
-              ? Math.ceil(favList.length / JOB_PER_PAGE)
-              : 0
-          }
-        />
+        {favList && (
+          <Pagination
+            value={activePage}
+            onChange={setActivePage}
+            total={Math.ceil(favList.length / JOB_PER_PAGE)}
+          />
+        )}
       </div>
     </div>
   );

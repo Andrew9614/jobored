@@ -6,7 +6,7 @@ import {
   VacanciesSearchResultType,
   VacancyObject,
 } from '../../types/vacanciesSearchResultType';
-import { Button, Loader, Pagination, TextInput } from '@mantine/core';
+import { Button, Loader, Modal, Pagination, TextInput } from '@mantine/core';
 import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
 import { Vacancies } from './Vacancies/Vacancies';
@@ -21,6 +21,8 @@ export const VacanciesContainer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [catalogues, setCatalogues] = useState<CatalogueType[]>([]);
   const [favList, setFavList] = useState<VacancyObject[] | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
 
   const [searchField, setSearchField] = useState(
     filterProvider ? filterProvider.filter.keyword : ''
@@ -36,6 +38,7 @@ export const VacanciesContainer = () => {
   );
 
   useEffect(() => {
+    setIsModalOpen(false);
     setIsLoading(true);
     Promise.all([
       jobAPI.getVacancies(JOB_PER_PAGE, filterProvider?.filter).then((res) => {
@@ -50,6 +53,17 @@ export const VacanciesContainer = () => {
   useEffect(() => {
     if (favList) jobAPI.setFavorites(favList);
   }, [favList]);
+
+  useEffect(() => {
+    window.addEventListener('resize', () =>
+      setIsMobile(window.innerWidth < 700)
+    );
+    return () => {
+      window.removeEventListener('resize', () =>
+        setIsMobile(window.innerWidth < 700)
+      );
+    };
+  }, []);
 
   const handleFilterSubmit = () => {
     filterProvider?.setFilter({
@@ -82,18 +96,26 @@ export const VacanciesContainer = () => {
   return (
     <div className={styles.container}>
       <div className={styles.filter}>
-        <Filter
-          activeCatalogue={activeCatalogue}
-          paymentFrom={paymentFrom}
-          paymentTo={paymentTo}
-          setActiveCatalogue={setActiveCatalogue}
-          setPaymentFrom={setPaymentFrom}
-          setPaymentTo={setPaymentTo}
+        <FilterWrapper
+          onOpen={() => setIsModalOpen(true)}
+          isModalOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          isMobile={isMobile}
           disabled={isLoading}
-          onClear={handleClear}
-          onSubmit={handleFilterSubmit}
-          catalogues={catalogues}
-        />
+        >
+          <Filter
+            activeCatalogue={activeCatalogue}
+            paymentFrom={paymentFrom}
+            paymentTo={paymentTo}
+            setActiveCatalogue={setActiveCatalogue}
+            setPaymentFrom={setPaymentFrom}
+            setPaymentTo={setPaymentTo}
+            disabled={isLoading}
+            onClear={handleClear}
+            onSubmit={handleFilterSubmit}
+            catalogues={catalogues}
+          />
+        </FilterWrapper>
       </div>
       <div className={styles.vacanciesWrapper}>
         <div className={styles.vacanciesContainer}>
@@ -132,23 +154,67 @@ export const VacanciesContainer = () => {
             <EmptyState title="Кажется, мы ничего не нашли" />
           )}
         </div>
-        <div className={styles.paginationContainer}>
-          <Pagination
-            disabled={isLoading}
-            value={filterProvider?.filter.page}
-            onChange={(e) =>
-              filterProvider?.setFilter({ ...filterProvider.filter, page: e })
-            }
-            total={
-              vacanciesList?.objects.length
-                ? vacanciesList.total < 500
-                  ? Math.ceil(vacanciesList.total / JOB_PER_PAGE)
-                  : Math.ceil(500 / JOB_PER_PAGE)
-                : 0
-            }
-          />
-        </div>
+        {vacanciesList && (
+            <div className={styles.paginationContainer}>
+              <Pagination
+                disabled={isLoading}
+                value={filterProvider?.filter.page}
+                onChange={(e) =>
+                  filterProvider?.setFilter({
+                    ...filterProvider.filter,
+                    page: e,
+                  })
+                }
+                size={isMobile ? 'sm' : undefined}
+                total={
+                  vacanciesList.total < 500
+                    ? Math.ceil(vacanciesList.total / JOB_PER_PAGE)
+                    : Math.ceil(500 / JOB_PER_PAGE)
+                }
+              />
+            </div>
+          )}
       </div>
     </div>
+  );
+};
+
+type FilterWrapperType = {
+  children?: JSX.Element;
+  isMobile: boolean;
+  disabled?: boolean;
+  isModalOpen: boolean;
+  onClose: () => void;
+  onOpen: () => void;
+};
+
+const FilterWrapper = ({
+  children,
+  isMobile,
+  disabled,
+  isModalOpen,
+  onClose,
+  onOpen,
+}: FilterWrapperType) => {
+  return isMobile ? (
+    <>
+      <Button
+        disabled={disabled}
+        className={styles.mobileFilterButton}
+        onClick={() => onOpen()}
+      >
+        Фильтры
+      </Button>
+      <Modal
+        className={styles.modal}
+        opened={isModalOpen}
+        onClose={() => onClose()}
+        centered
+      >
+        {children}
+      </Modal>
+    </>
+  ) : (
+    <>{children}</>
   );
 };

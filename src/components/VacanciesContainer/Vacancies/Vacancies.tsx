@@ -1,6 +1,6 @@
 import styles from './Vacancies.module.scss';
 import { VacancyObject } from '../../../types/vacanciesSearchResultType';
-import { VacancyCard } from './VacancyCard/VacancyCard';
+import { VacancyCard } from '../../VacancyCard/VacancyCard';
 
 type VacanciesType = {
   vacancies: VacancyObject[];
