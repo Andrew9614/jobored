@@ -6,9 +6,14 @@ import {
 import { CatalogueType } from '../types/catalogueType';
 import { FilterType } from '../types/filterType';
 import { ErrorType } from '../types/errorType';
+import {
+  BASE_URL_API,
+  CATALOGUES_URL_API,
+  VACANCIES_URL_API,
+} from '../globalVars/routes';
 
 const superjob = axios.create({
-  baseURL: 'https://startup-summer-2023-proxy.onrender.com/2.0/',
+  baseURL: BASE_URL_API,
   headers: {
     'x-secret-key': 'GEU4nvd3rej*jeh.eqp',
     'X-Api-App-Id':
@@ -36,34 +41,32 @@ export const jobAPI = {
   async getVacancies(count = 20, filter: FilterType = {}) {
     const res = await superjob
       .get<VacanciesSearchResultType>(
-        `vacancies/?published=1&page=${
+        `${VACANCIES_URL_API}?published=1&page=${
           (filter.page || 1) - 1
-        }&count=${count}&catalogues=${
-          filter.catalogues
-        }&payment_from=${filter.payment_from}&payment_to=${
-          filter.payment_to
-        }&keyword=${filter.keyword || ''}${
+        }&count=${count}&catalogues=${filter.catalogues}&payment_from=${
+          filter.payment_from
+        }&payment_to=${filter.payment_to}&keyword=${filter.keyword || ''}${
           filter.payment_from || filter.payment_to ? '&no_agreement=1' : ''
         }`
       )
       .catch((error) => {
         throw onError(error);
       });
-    console.log(res.data);
+    process.env.NODE_ENV === 'development' && console.log(res.data);
     return res.data;
   },
   async getVacancy(id: string) {
     const res = await superjob
-      .get<VacancyObject>('vacancies/' + id)
+      .get<VacancyObject>(VACANCIES_URL_API + id)
       .catch((error) => {
         throw onError(error);
       });
-    console.log(res.data);
+    process.env.NODE_ENV === 'development' && console.log(res.data);
     return res.data;
   },
   async getCatalogues() {
     const res = await superjob
-      .get<CatalogueType[]>(`catalogues`)
+      .get<CatalogueType[]>(CATALOGUES_URL_API)
       .catch((error) => {
         throw onError(error);
       });

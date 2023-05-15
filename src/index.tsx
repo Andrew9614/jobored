@@ -8,6 +8,7 @@ import { Favorites } from './components/Favorites/Favorits';
 import { VacanciesContainer } from './components/VacanciesContainer/VacanciesContainer';
 import { VacancyPage } from './components/VacancyPage/VacancyPage';
 import { EmptyState } from './components/EmptyState/EmptyState';
+import { FAVORITES_PAGE_URL, SEARCH_PAGE_URL } from './globalVars/routes';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -25,16 +26,18 @@ const router = createBrowserRouter([
         element: <VacancyPage />,
       },
       {
-        path: '/search',
+        path: SEARCH_PAGE_URL,
         element: <VacanciesContainer />,
       },
       {
-        path: '/favorites',
+        path: FAVORITES_PAGE_URL,
         element: <Favorites />,
       },
       {
         path: '/404',
-        element: <EmptyState title="Такой страницы не существует" withRedirectButton />,
+        element: (
+          <EmptyState title="Такой страницы не существует" withRedirectButton />
+        ),
       },
     ],
   },

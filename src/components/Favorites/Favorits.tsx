@@ -5,7 +5,7 @@ import { favAPI } from '../../api/api';
 import { VacancyCard } from '../VacancyCard/VacancyCard';
 import styles from './Favorites.module.scss';
 import { Loader, Pagination } from '@mantine/core';
-import { JOB_PER_PAGE } from '../../settings/settings';
+import { JOB_PER_PAGE } from '../../globalVars/settings';
 import { ErrorModal } from '../ErrorModal/ErrorModal';
 import { ErrorType } from '../../types/errorType';
 import { useNavigate } from 'react-router-dom';
@@ -48,7 +48,7 @@ export const Favorites = () => {
     if (favList) {
       let startIndex = JOB_PER_PAGE * (activePage - 1);
       let endIndex = startIndex + JOB_PER_PAGE;
-      console.log(
+      process.env.NODE_ENV==='development' && console.log(
         startIndex,
         endIndex > favList.length - 1 ? favList.length : endIndex,
         favList.length

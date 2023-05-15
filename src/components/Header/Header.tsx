@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import styles from './Header.module.scss';
 import { Logo } from './Logo/Logo';
+import { FAVORITES_PAGE_URL, SEARCH_PAGE_URL } from '../../globalVars/routes';
 
 export const Header = () => {
   return (
@@ -11,13 +12,13 @@ export const Header = () => {
       <nav className={styles.linkContainer}>
         <NavLink
           className={({ isActive }) => (isActive ? styles.active : '')}
-          to={'/search'}
+          to={SEARCH_PAGE_URL}
         >
           Поиск Вакансий
         </NavLink>
         <NavLink
           className={({ isActive }) => (isActive ? styles.active : '')}
-          to={'/favorites'}
+          to={FAVORITES_PAGE_URL}
         >
           Избраное
         </NavLink>

@@ -28,7 +28,6 @@ export const VacancyPage = () => {
         .catch((error) => {
           setModalError(error);
           setIsLoading(false);
-          console.log('object', error.code === '404');
           if (error.code === '404') navigate('/404');
         });
   }, [id, navigate]);

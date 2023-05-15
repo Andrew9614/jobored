@@ -11,7 +11,7 @@ import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
 import { Vacancies } from './Vacancies/Vacancies';
 import { EmptyState } from '../EmptyState/EmptyState';
-import { JOB_PER_PAGE } from '../../settings/settings';
+import { JOB_PER_PAGE, TOTAL_LIMIT } from '../../globalVars/settings';
 import { FilterContext } from '../../App';
 import { ErrorType } from '../../types/errorType';
 import { ErrorModal } from '../ErrorModal/ErrorModal';
@@ -48,7 +48,7 @@ export const VacanciesContainer = () => {
         .getVacancies(JOB_PER_PAGE, filterProvider?.filter)
         .then((res) => {
           setVacanciesList(res);
-          console.log(res);
+          process.env.NODE_ENV === 'development' && console.log(res);
         })
         .catch((error) => {
           setModalError(error);
@@ -123,30 +123,28 @@ export const VacanciesContainer = () => {
         submit={() => handleFilterSubmit()}
       />
       <div className={styles.container}>
-        {process.env.NODE_ENV === 'development' && (
-          <div className={styles.filter}>
-            <FilterWrapper
-              onOpen={() => setIsModalOpen(true)}
-              isModalOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              isMobile={isMobile}
+        <div className={styles.filter}>
+          <FilterWrapper
+            onOpen={() => setIsModalOpen(true)}
+            isModalOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            isMobile={isMobile}
+            disabled={isLoading}
+          >
+            <Filter
+              activeCatalogue={activeCatalogue}
+              paymentFrom={paymentFrom}
+              paymentTo={paymentTo}
+              setActiveCatalogue={setActiveCatalogue}
+              setPaymentFrom={setPaymentFrom}
+              setPaymentTo={setPaymentTo}
               disabled={isLoading}
-            >
-              <Filter
-                activeCatalogue={activeCatalogue}
-                paymentFrom={paymentFrom}
-                paymentTo={paymentTo}
-                setActiveCatalogue={setActiveCatalogue}
-                setPaymentFrom={setPaymentFrom}
-                setPaymentTo={setPaymentTo}
-                disabled={isLoading}
-                onClear={handleClear}
-                onSubmit={handleFilterSubmit}
-                catalogues={catalogues}
-              />
-            </FilterWrapper>
-          </div>
-        )}
+              onClear={handleClear}
+              onSubmit={handleFilterSubmit}
+              catalogues={catalogues}
+            />
+          </FilterWrapper>
+        </div>
         <div className={styles.vacanciesWrapper}>
           <div className={styles.vacanciesContainer}>
             <TextInput
@@ -197,9 +195,9 @@ export const VacanciesContainer = () => {
                 }
                 size={isMobile ? 'sm' : undefined}
                 total={
-                  vacanciesList.total < 500
+                  vacanciesList.total < TOTAL_LIMIT
                     ? Math.ceil(vacanciesList.total / JOB_PER_PAGE)
-                    : Math.ceil(500 / JOB_PER_PAGE)
+                    : Math.ceil(TOTAL_LIMIT / JOB_PER_PAGE)
                 }
               />
             </div>
