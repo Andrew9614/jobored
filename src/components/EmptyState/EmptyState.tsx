@@ -1,7 +1,6 @@
 import { Button } from '@mantine/core';
 import styles from './EmptyState.module.scss';
 import { Link } from 'react-router-dom';
-import { SEARCH_PAGE_URL } from '../../globalVars/routes';
 
 type EmptyStateType = {
   withRedirectButton?: boolean;
@@ -14,7 +13,7 @@ export const EmptyState = ({ withRedirectButton, title }: EmptyStateType) => {
       <img src="/images/chelik.svg" alt="chelik" />
       {title && <h3>{title}</h3>}
       {withRedirectButton && (
-        <Link to={SEARCH_PAGE_URL}>
+        <Link to={'/'}>
           <Button>Поиск вакансий</Button>
         </Link>
       )}

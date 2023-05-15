@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { jobAPI } from '../../api/api';
+import { favAPI, jobAPI } from '../../api/api';
 import { VacancyObject } from '../../types/vacanciesSearchResultType';
 import { VacancyCard } from '../VacancyCard/VacancyCard';
 import { Loader } from '@mantine/core';
@@ -16,9 +16,13 @@ export const VacancyPage = () => {
   const [vacancyData, setVacancyData] = useState<VacancyObject>();
   const [isLoading, setIsLoading] = useState(true);
   const [modalError, setModalError] = useState<ErrorType | null>(null);
+  const [favList, setFavList] = useState<VacancyObject[] | null>(null);
 
   useEffect(() => {
-    if (id)
+    if (id) {
+      if (isNaN(+id)) {
+        navigate('/404');
+      }
       jobAPI
         .getVacancy(id)
         .then((res) => {
@@ -30,7 +34,29 @@ export const VacancyPage = () => {
           setIsLoading(false);
           if (error.code === '404') navigate('/404');
         });
+    }
   }, [id, navigate]);
+
+  useEffect(() => {
+    favAPI.getFavorites().then((res) => setFavList(res));
+  }, []);
+
+  useEffect(() => {
+    if (favList) favAPI.setFavorites(favList);
+  }, [favList]);
+
+  const handleFavStarClick = (vacancy: VacancyObject) => {
+    if (favList) {
+      if (favList?.find((el) => el.id === vacancy.id)) {
+        setFavList(favList.filter((el) => el.id !== vacancy.id));
+      } else {
+        setFavList([...favList, vacancy]);
+      }
+    } else {
+      setFavList([vacancy]);
+    }
+  };
+  console.log(favList);
   return (
     <>
       <ErrorModal
@@ -48,10 +74,11 @@ export const VacancyPage = () => {
           vacancyData && (
             <>
               <VacancyCard
-                onFavStarClick={() => {}}
+                onFavStarClick={handleFavStarClick}
                 withoutLink
                 big
                 vacancy={vacancyData}
+                isFavorite={!!favList?.find((el) => el.id === vacancyData.id)}
               />
               <div
                 className={styles.description}

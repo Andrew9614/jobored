@@ -7,18 +7,30 @@ import { CatalogueType } from '../types/catalogueType';
 import { FilterType } from '../types/filterType';
 import { ErrorType } from '../types/errorType';
 import {
+  AUTH_ON_PASSWORD_URL,
   BASE_URL_API,
   CATALOGUES_URL_API,
   VACANCIES_URL_API,
 } from '../globalVars/routes';
+import { AuthDataType } from '../types/authDataType';
+
+const headers = {
+  'x-secret-key': 'GEU4nvd3rej*jeh.eqp',
+  'X-Api-App-Id':
+    'v3.r.137440105.ffdbab114f92b821eac4e21f485343924a773131.06c3bdbb8446aeb91c35b80c42ff69eb9c457948',
+};
 
 const superjob = axios.create({
   baseURL: BASE_URL_API,
-  headers: {
-    'x-secret-key': 'GEU4nvd3rej*jeh.eqp',
-    'X-Api-App-Id':
-      'v3.r.137440105.ffdbab114f92b821eac4e21f485343924a773131.06c3bdbb8446aeb91c35b80c42ff69eb9c457948',
-  },
+  headers: headers,
+});
+
+superjob.interceptors.request.use(async (config) => {
+  const token = await getAuthData();
+  if (token) {
+    config.headers.Authorization = token.token_type + ' ' + token.access_token;
+  }
+  return config;
 });
 
 const onError = (
@@ -95,3 +107,26 @@ export const favAPI = {
     }
   },
 };
+
+async function getAuthData() {
+  const authData = JSON.parse(
+    localStorage.getItem('authData') || 'null'
+  ) as AuthDataType | null;
+
+  if (authData && authData.ttl - Date.now() / 1000 > 0) {
+    process.env.NODE_ENV === 'development' && console.log('catch');
+    return authData;
+  }
+
+  const res = await axios.get<AuthDataType>(
+    AUTH_ON_PASSWORD_URL +
+      '?login=sergei.stralenia@gmail.com&password=paralect123&client_id=2356&client_secret=v3.r.137440105.ffdbab114f92b821eac4e21f485343924a773131.06c3bdbb8446aeb91c35b80c42ff69eb9c457948&hr=0',
+    {
+      baseURL: BASE_URL_API,
+      headers: headers,
+    }
+  );
+  process.env.NODE_ENV === 'development' && console.log(res);
+  localStorage.setItem('authData', JSON.stringify(res.data));
+  return res.data;
+}
