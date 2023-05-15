@@ -19,7 +19,7 @@ const superjob = axios.create({
 const onError = (
   error: AxiosError<{ error: { code: number; message: string } }>
 ): ErrorType => {
-  console.log(error);
+  console.error(error);
   if (error.response?.data.error) {
     return {
       code: error.response.status + '',
@@ -36,16 +36,17 @@ export const jobAPI = {
   async getVacancies(count = 20, filter: FilterType = {}) {
     const res = await superjob
       .get<VacanciesSearchResultType>(
-        `vacancies/?page=${
+        `vacancies/?published=1&page=${
           (filter.page || 1) - 1
-        }&count=${count}&published=1&catalogues=${
+        }&count=${count}&catalogues=${
           filter.catalogues
         }&payment_from=${filter.payment_from}&payment_to=${
           filter.payment_to
-        }&keyword=${filter.keyword || ''}`
+        }&keyword=${filter.keyword || ''}${
+          filter.payment_from || filter.payment_to ? '&no_agreement=1' : ''
+        }`
       )
       .catch((error) => {
-        console.log(error);
         throw onError(error);
       });
     console.log(res.data);
@@ -55,7 +56,6 @@ export const jobAPI = {
     const res = await superjob
       .get<VacancyObject>('vacancies/' + id)
       .catch((error) => {
-        console.log(error);
         throw onError(error);
       });
     console.log(res.data);
@@ -65,11 +65,13 @@ export const jobAPI = {
     const res = await superjob
       .get<CatalogueType[]>(`catalogues`)
       .catch((error) => {
-        console.log(error);
         throw onError(error);
       });
     return res.data;
   },
+};
+
+export const favAPI = {
   async getFavorites() {
     const res = localStorage.getItem('favList');
     if (res) return JSON.parse(res) as VacancyObject[];
@@ -80,12 +82,13 @@ export const jobAPI = {
   },
   async cleanFavorites() {
     let fav = localStorage.getItem('favList');
-    if (fav)
+    if (fav) {
       localStorage.setItem(
         'favList',
         JSON.stringify(
           (JSON.parse(fav) as VacancyObject[]).filter((el) => !el.isPending)
         )
       );
+    }
   },
 };

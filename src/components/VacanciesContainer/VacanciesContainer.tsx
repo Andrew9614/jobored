@@ -1,18 +1,12 @@
 import styles from './VacanciesContainer.module.scss';
 
 import { useContext, useEffect, useState } from 'react';
-import { jobAPI } from '../../api/api';
+import { favAPI, jobAPI } from '../../api/api';
 import {
   VacanciesSearchResultType,
   VacancyObject,
 } from '../../types/vacanciesSearchResultType';
-import {
-  Button,
-  Loader,
-  Modal,
-  Pagination,
-  TextInput,
-} from '@mantine/core';
+import { Button, Loader, Modal, Pagination, TextInput } from '@mantine/core';
 import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
 import { Vacancies } from './Vacancies/Vacancies';
@@ -67,7 +61,7 @@ export const VacanciesContainer = () => {
           setModalError(error);
           setIsLoading(false);
         }),
-      jobAPI
+      favAPI
         .getFavorites()
         .then((res) => setFavList(res))
         .catch((error) => {
@@ -78,7 +72,7 @@ export const VacanciesContainer = () => {
   }, [filterProvider]);
 
   useEffect(() => {
-    if (favList) jobAPI.setFavorites(favList);
+    if (favList) favAPI.setFavorites(favList);
   }, [favList]);
 
   useEffect(() => {
@@ -129,28 +123,30 @@ export const VacanciesContainer = () => {
         submit={() => handleFilterSubmit()}
       />
       <div className={styles.container}>
-        <div className={styles.filter}>
-          <FilterWrapper
-            onOpen={() => setIsModalOpen(true)}
-            isModalOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            isMobile={isMobile}
-            disabled={isLoading}
-          >
-            <Filter
-              activeCatalogue={activeCatalogue}
-              paymentFrom={paymentFrom}
-              paymentTo={paymentTo}
-              setActiveCatalogue={setActiveCatalogue}
-              setPaymentFrom={setPaymentFrom}
-              setPaymentTo={setPaymentTo}
+        {process.env.NODE_ENV === 'development' && (
+          <div className={styles.filter}>
+            <FilterWrapper
+              onOpen={() => setIsModalOpen(true)}
+              isModalOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              isMobile={isMobile}
               disabled={isLoading}
-              onClear={handleClear}
-              onSubmit={handleFilterSubmit}
-              catalogues={catalogues}
-            />
-          </FilterWrapper>
-        </div>
+            >
+              <Filter
+                activeCatalogue={activeCatalogue}
+                paymentFrom={paymentFrom}
+                paymentTo={paymentTo}
+                setActiveCatalogue={setActiveCatalogue}
+                setPaymentFrom={setPaymentFrom}
+                setPaymentTo={setPaymentTo}
+                disabled={isLoading}
+                onClear={handleClear}
+                onSubmit={handleFilterSubmit}
+                catalogues={catalogues}
+              />
+            </FilterWrapper>
+          </div>
+        )}
         <div className={styles.vacanciesWrapper}>
           <div className={styles.vacanciesContainer}>
             <TextInput
@@ -188,7 +184,7 @@ export const VacanciesContainer = () => {
               <EmptyState title="Кажется, мы ничего не нашли" />
             )}
           </div>
-          {vacanciesList && (
+          {vacanciesList && vacanciesList.total > JOB_PER_PAGE && (
             <div className={styles.paginationContainer}>
               <Pagination
                 disabled={isLoading}

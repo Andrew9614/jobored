@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { VacancyObject } from '../../types/vacanciesSearchResultType';
-import { jobAPI } from '../../api/api';
+import { favAPI } from '../../api/api';
 import { VacancyCard } from '../VacancyCard/VacancyCard';
 import styles from './Favorites.module.scss';
 import { Loader, Pagination } from '@mantine/core';
@@ -11,7 +11,7 @@ import { ErrorType } from '../../types/errorType';
 import { useNavigate } from 'react-router-dom';
 
 export const Favorites = () => {
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [favList, setFavList] = useState<VacancyObject[] | null>(null);
   const [favPage, setFavPage] = useState<VacancyObject[] | null>(null);
@@ -21,27 +21,27 @@ export const Favorites = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    jobAPI
+    favAPI
       .getFavorites()
       .then((res) => {
-        setFavList(res);
         setIsLoading(false);
+        setFavList(res);
       })
       .catch((error) => {
-        setModalError(error);
         setIsLoading(false);
+        setModalError(error);
       });
   }, []);
 
   useEffect(
     () => () => {
-      jobAPI.cleanFavorites();
+      favAPI.cleanFavorites();
     },
     []
   );
 
   useEffect(() => {
-    if (favList) jobAPI.setFavorites(favList);
+    if (favList) favAPI.setFavorites(favList);
   }, [favList]);
 
   useEffect(() => {
@@ -101,15 +101,15 @@ export const Favorites = () => {
             <EmptyState title="Упс, здесь еще ничего нет!" withRedirectButton />
           )}
         </div>
-        <div className={styles.paginationContainer}>
-          {favList && (
+        {favList && favList.length > JOB_PER_PAGE && (
+          <div className={styles.paginationContainer}>
             <Pagination
               value={activePage}
               onChange={setActivePage}
               total={Math.ceil(favList.length / JOB_PER_PAGE)}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );

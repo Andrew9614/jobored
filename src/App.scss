@@ -6,7 +6,7 @@
   grid-template-areas:
     'header'
     'content';
-  overflow: auto;
+		overflow-y: overlay;
   .content {
     grid-area: content;
     display: flex;

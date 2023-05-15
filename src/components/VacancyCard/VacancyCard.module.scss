@@ -30,9 +30,20 @@
       display: flex;
       gap: 8px;
     }
+		&.big {
+			font-size: 20px;
+			gap: 16px;
+			.profession {
+				font-size: 28px;
+				line-height: unset;
+			}
+			.location {
+				font-size: 16px;
+			}
+		}
   }
   .favStar {
-		min-width: 22px;
+    min-width: 22px;
     cursor: pointer;
     path {
       transition: fill 0.2s, stroke 0.2s;
@@ -49,15 +60,5 @@
       }
     }
   }
-}
-
-.big {
-  font-size: 20px !important;
-  gap: 16px !important;
-  .profession {
-    font-size: 28px !important;
-  }
-  .location {
-    font-size: 16px !important;
-  }
+	
 }
