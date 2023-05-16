@@ -38,13 +38,6 @@ export const Favorites = () => {
       });
   }, []);
 
-  useEffect(
-    () => () => {
-      favAPI.cleanFavorites();
-    },
-    []
-  );
-
   useEffect(() => {
     if (favList) favAPI.setFavorites(favList);
   }, [favList]);
@@ -67,6 +60,13 @@ export const Favorites = () => {
       );
     }
   }, [activePage, favList]);
+
+  useEffect(
+    () => () => {
+      favAPI.cleanFavorites();
+    },
+    []
+  );
 
   const handleFavStarClick = (vacancy: VacancyObject) => {
     if (favList) {

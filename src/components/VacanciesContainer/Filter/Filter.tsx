@@ -78,6 +78,7 @@ export const Filter = ({
     if (!activeCatalogue) return null;
     return catalogues.find((el) => el.key === activeCatalogue)?.title_trimmed;
   };
+	
   const findCatalogueKeyByTitle = (title: string | null) => {
     if (!title) return null;
     return catalogues.find((el) => el.title_trimmed === title)?.key;

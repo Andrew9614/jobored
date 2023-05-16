@@ -19,6 +19,7 @@ import { PaginationContainer } from '../PaginationContainer/PaginationContainer'
 
 export const VacanciesContainer = () => {
   const filterProvider = useContext(FilterContext);
+
   const [vacanciesList, setVacanciesList] =
     useState<VacanciesSearchResultType>();
   const [isLoading, setIsLoading] = useState(true);
@@ -100,6 +101,7 @@ export const VacanciesContainer = () => {
       payment_to: paymentTo === '' ? undefined : paymentTo,
     });
   };
+	
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleFilterSubmit();
   };
