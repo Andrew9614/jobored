@@ -52,15 +52,19 @@ const onError = (
 export const jobAPI = {
   async getVacancies(count = 20, filter: FilterType = {}) {
     const res = await superjob
-      .get<VacanciesSearchResultType>(
-        `${VACANCIES_URL_API}?published=1&page=${
-          (filter.page || 1) - 1
-        }&count=${count}&catalogues=${filter.catalogues}&payment_from=${
-          filter.payment_from
-        }&payment_to=${filter.payment_to}&keyword=${filter.keyword || ''}${
-          filter.payment_from || filter.payment_to ? '&no_agreement=1' : ''
-        }`
-      )
+      .get<VacanciesSearchResultType>(VACANCIES_URL_API, {
+        params: {
+          published: 1,
+          count: count,
+          page: (filter.page || 1) - 1,
+          catalogues: filter.catalogues,
+          payment_from: filter.payment_from,
+          payment_to: filter.payment_to,
+          keyword: filter.keyword,
+          no_agreement:
+            filter.payment_from || filter.payment_to ? '1' : undefined,
+        },
+      })
       .catch((error) => {
         throw onError(error);
       });
@@ -118,14 +122,18 @@ async function getAuthData() {
     return authData;
   }
 
-  const res = await axios.get<AuthDataType>(
-    AUTH_ON_PASSWORD_URL +
-      '?login=sergei.stralenia@gmail.com&password=paralect123&client_id=2356&client_secret=v3.r.137440105.ffdbab114f92b821eac4e21f485343924a773131.06c3bdbb8446aeb91c35b80c42ff69eb9c457948&hr=0',
-    {
-      baseURL: BASE_URL_API,
-      headers: headers,
-    }
-  );
+  const res = await axios.get<AuthDataType>(AUTH_ON_PASSWORD_URL, {
+    baseURL: BASE_URL_API,
+    headers: headers,
+    params: {
+      login: 'sergei.stralenia@gmail.com',
+      password: 'paralect123',
+      client_id: 2356,
+      client_secret:
+        'v3.r.137440105.ffdbab114f92b821eac4e21f485343924a773131.06c3bdbb8446aeb91c35b80c42ff69eb9c457948',
+      hr: 0,
+    },
+  });
   process.env.NODE_ENV === 'development' && console.log(res);
   localStorage.setItem('authData', JSON.stringify(res.data));
   return res.data;
