@@ -108,6 +108,7 @@ export const VacanciesContainer = () => {
     setSearchField('');
     filterProvider?.setFilter({ page: 1 });
   };
+
   const handleFavStarClick = (vacancy: VacancyObject) => {
     if (favList) {
       if (favList?.find((el) => el.id === vacancy.id)) {
@@ -153,6 +154,7 @@ export const VacanciesContainer = () => {
         <div className={styles.vacanciesWrapper}>
           <div className={styles.vacanciesContainer}>
             <TextInput
+              data-elem="search-input"
               disabled={isLoading}
               className={styles.search}
               value={searchField ? searchField : ''}
@@ -164,6 +166,7 @@ export const VacanciesContainer = () => {
               icon={<img src="/images/search.svg" alt="search" />}
               rightSection={
                 <Button
+                  data-elem="search-button"
                   disabled={isLoading}
                   onClick={handleFilterSubmit}
                   className={styles.searchButton}

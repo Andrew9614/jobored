@@ -38,7 +38,7 @@ export const VacancyCard = ({
   };
 
   return (
-    <div className={styles.container}>
+    <div data-elem={'vacancy-' + vacancy.id} className={styles.container}>
       <div className={styles.description + (big ? ' ' + styles.big : '')}>
         {withoutLink ? (
           <div className={styles.profession}>{vacancy.profession}</div>
@@ -67,10 +67,15 @@ export const VacancyCard = ({
           {vacancy.town.title}
         </div>
       </div>
-      <FavStar
+      <button
         onClick={() => onFavStarClick(vacancy)}
-        className={styles.favStar + (isFavorite ? ' ' + styles.active : '')}
-      />
+        data-elem={`vacancy-${vacancy.id}-shortlist-button`}
+        style={{ background: 'none', padding: '0', border: 'none' }}
+      >
+        <FavStar
+          className={styles.favStar + (isFavorite ? ' ' + styles.active : '')}
+        />
+      </button>
     </div>
   );
 };

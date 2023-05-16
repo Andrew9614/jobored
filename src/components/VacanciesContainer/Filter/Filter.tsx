@@ -75,9 +75,11 @@ export const Filter = ({
   };
 
   const findCatalogueTitleByKey = () => {
+    if (!activeCatalogue) return null;
     return catalogues.find((el) => el.key === activeCatalogue)?.title_trimmed;
   };
   const findCatalogueKeyByTitle = (title: string | null) => {
+    if (!title) return null;
     return catalogues.find((el) => el.title_trimmed === title)?.key;
   };
   return (
@@ -93,6 +95,7 @@ export const Filter = ({
       <div className={styles.catalogues}>
         <h4>Отрасль</h4>
         <Select
+          data-elem="industry-select"
           dropdownPosition="bottom"
           onFocus={() => setSelectorIsActive(true)}
           onBlur={() => setSelectorIsActive(false)}
@@ -101,7 +104,7 @@ export const Filter = ({
           clearable
           disabled={disabled}
           data={catalogues.map((el) => el.title_trimmed)}
-          placeholder="Выберете отрасль"
+          placeholder="Выберите отрасль"
           value={findCatalogueTitleByKey()}
           onChange={(e) => setActiveCatalogue(findCatalogueKeyByTitle(e))}
           rightSectionProps={{ onMouseDown: handleSelectorIconClick }}
@@ -113,6 +116,7 @@ export const Filter = ({
       <div style={{ userSelect: 'none' }} className={styles.payment}>
         <h4>Оклад</h4>
         <NumberInput
+          data-elem="salary-from-input"
           disabled={disabled}
           value={paymentFrom}
           type="number"
@@ -125,6 +129,7 @@ export const Filter = ({
           onKeyUp={handleEnter}
         />
         <NumberInput
+          data-elem="salary-to-input"
           disabled={disabled}
           className={styles.numberInput}
           value={paymentTo}
@@ -138,7 +143,11 @@ export const Filter = ({
           onKeyUp={handleEnter}
         />
       </div>
-      <Button disabled={disabled} onClick={handleSubmit}>
+      <Button
+        data-elem="search-button"
+        disabled={disabled}
+        onClick={handleSubmit}
+      >
         Применить
       </Button>
     </div>
