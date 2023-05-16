@@ -72,7 +72,7 @@ function App() {
     <MantineProvider theme={theme}>
       <Header />
       <main className="content">
-        <FilterContext.Provider value={{filter,setFilter}}>
+        <FilterContext.Provider value={{ filter, setFilter }}>
           <Outlet />
         </FilterContext.Provider>
       </main>

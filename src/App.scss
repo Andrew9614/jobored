@@ -1,12 +1,12 @@
 #root {
   width: 100%;
-	height: 100%;
+  height: 100%;
   display: grid;
   grid-template-rows: 84px;
   grid-template-areas:
     'header'
     'content';
-		overflow-y: overlay;
+  overflow-y: overlay;
   .content {
     grid-area: content;
     display: flex;

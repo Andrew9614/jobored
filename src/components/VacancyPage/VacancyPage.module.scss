@@ -3,8 +3,8 @@
 .container {
   @include defaultContainer;
   gap: 20px;
-	margin-bottom: 20px;
-	word-break: break-word;
+  margin-bottom: 20px;
+  word-break: break-word;
   .loaderContainer {
     height: 100%;
     width: 100%;
@@ -15,9 +15,9 @@
   .description {
     @include mainBox;
     flex-direction: column;
-		b{
-			font-size: 20px;
-			font-weight: 700;
-		}
+    b {
+      font-size: 20px;
+      font-weight: 700;
+    }
   }
 }

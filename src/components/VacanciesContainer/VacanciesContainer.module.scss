@@ -53,11 +53,11 @@
   :global .mantine-Modal-inner {
     box-sizing: border-box;
   }
-	.alertContainer{
-		display: flex;
-		flex-direction: column;
-		gap: 15px;
-	}
+  .alertContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 }
 
 @media (max-width: 700px) {
@@ -68,7 +68,7 @@
       position: static;
     }
     .vacanciesWrapper {
-			padding-bottom: 55px;
+      padding-bottom: 55px;
     }
   }
 }

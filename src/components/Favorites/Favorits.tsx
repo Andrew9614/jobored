@@ -4,11 +4,12 @@ import { VacancyObject } from '../../types/vacanciesSearchResultType';
 import { favAPI } from '../../api/api';
 import { VacancyCard } from '../VacancyCard/VacancyCard';
 import styles from './Favorites.module.scss';
-import { Loader, Pagination } from '@mantine/core';
+import { Loader } from '@mantine/core';
 import { JOB_PER_PAGE } from '../../globalVars/settings';
 import { ErrorModal } from '../ErrorModal/ErrorModal';
 import { ErrorType } from '../../types/errorType';
 import { useNavigate } from 'react-router-dom';
+import { PaginationContainer } from '../PaginationContainer/PaginationContainer';
 
 export const Favorites = () => {
   const navigate = useNavigate();
@@ -48,11 +49,12 @@ export const Favorites = () => {
     if (favList) {
       let startIndex = JOB_PER_PAGE * (activePage - 1);
       let endIndex = startIndex + JOB_PER_PAGE;
-      process.env.NODE_ENV==='development' && console.log(
-        startIndex,
-        endIndex > favList.length - 1 ? favList.length : endIndex,
-        favList.length
-      );
+      process.env.NODE_ENV === 'development' &&
+        console.log(
+          startIndex,
+          endIndex > favList.length - 1 ? favList.length : endIndex,
+          favList.length
+        );
       setFavPage(
         favList?.slice(
           startIndex,
@@ -101,15 +103,11 @@ export const Favorites = () => {
             <EmptyState title="Упс, здесь еще ничего нет!" withRedirectButton />
           )}
         </div>
-        {favList && favList.length > JOB_PER_PAGE && (
-          <div className={styles.paginationContainer}>
-            <Pagination
-              value={activePage}
-              onChange={setActivePage}
-              total={Math.ceil(favList.length / JOB_PER_PAGE)}
-            />
-          </div>
-        )}
+        <PaginationContainer
+          paginationProps={{ value: activePage, onChange: setActivePage }}
+          length={favList?.length}
+          className={styles.paginationContainer}
+        />
       </div>
     </>
   );

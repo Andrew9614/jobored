@@ -56,7 +56,6 @@ export const VacancyPage = () => {
       setFavList([vacancy]);
     }
   };
-  console.log(favList);
   return (
     <>
       <ErrorModal

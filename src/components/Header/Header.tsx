@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styles from './Header.module.scss';
 import { Logo } from './Logo/Logo';
 import { FAVORITES_PAGE_URL } from '../../globalVars/routes';
@@ -6,9 +6,9 @@ import { FAVORITES_PAGE_URL } from '../../globalVars/routes';
 export const Header = () => {
   return (
     <header className={styles.container}>
-      <Link className={styles.logo} to={'/'}>
+      <div className={styles.logo}>
         <Logo />
-      </Link>
+      </div>
       <nav className={styles.linkContainer}>
         <NavLink
           className={({ isActive }) => (isActive ? styles.active : '')}

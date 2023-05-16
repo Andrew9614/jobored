@@ -6,15 +6,16 @@ import {
   VacanciesSearchResultType,
   VacancyObject,
 } from '../../types/vacanciesSearchResultType';
-import { Button, Loader, Modal, Pagination, TextInput } from '@mantine/core';
+import { Button, Loader, Modal, TextInput } from '@mantine/core';
 import { Filter } from './Filter/Filter';
 import { CatalogueType } from '../../types/catalogueType';
 import { Vacancies } from './Vacancies/Vacancies';
 import { EmptyState } from '../EmptyState/EmptyState';
-import { JOB_PER_PAGE, TOTAL_LIMIT } from '../../globalVars/settings';
+import { JOB_PER_PAGE } from '../../globalVars/settings';
 import { FilterContext } from '../../App';
 import { ErrorType } from '../../types/errorType';
 import { ErrorModal } from '../ErrorModal/ErrorModal';
+import { PaginationContainer } from '../PaginationContainer/PaginationContainer';
 
 export const VacanciesContainer = () => {
   const filterProvider = useContext(FilterContext);
@@ -182,26 +183,21 @@ export const VacanciesContainer = () => {
               <EmptyState title="Кажется, мы ничего не нашли" />
             )}
           </div>
-          {vacanciesList && vacanciesList.total > JOB_PER_PAGE && (
-            <div className={styles.paginationContainer}>
-              <Pagination
-                disabled={isLoading}
-                value={filterProvider?.filter.page}
-                onChange={(e) =>
-                  filterProvider?.setFilter({
-                    ...filterProvider.filter,
-                    page: e,
-                  })
-                }
-                size={isMobile ? 'sm' : undefined}
-                total={
-                  vacanciesList.total < TOTAL_LIMIT
-                    ? Math.ceil(vacanciesList.total / JOB_PER_PAGE)
-                    : Math.ceil(TOTAL_LIMIT / JOB_PER_PAGE)
-                }
-              />
-            </div>
-          )}
+          <PaginationContainer
+            paginationProps={{
+              disabled: isLoading,
+              value: filterProvider?.filter.page,
+              onChange: (e) =>
+                filterProvider?.setFilter({
+                  ...filterProvider.filter,
+                  page: e,
+                }),
+
+              size: isMobile ? 'sm' : undefined,
+            }}
+            length={vacanciesList?.total}
+            className={styles.paginationContainer}
+          />
         </div>
       </div>
     </>

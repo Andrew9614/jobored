@@ -13,7 +13,7 @@ export const ArrowBig = ({ direction }: ArrowBigType) => {
       style={{
         transform: `rotate(${direction === 'up' ? '180deg' : 0})`,
         cursor: 'pointer',
-				transition: 'transform 0.2s'
+        transition: 'transform 0.2s',
       }}
     >
       <path

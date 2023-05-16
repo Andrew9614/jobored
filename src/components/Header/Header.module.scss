@@ -48,8 +48,9 @@
 }
 @media (max-width: 700px) {
   .container {
+    height: 90px;
     flex-direction: column;
-    gap: 10px;
+    justify-content: space-evenly;
     .logo {
       position: static;
     }

@@ -5,7 +5,7 @@ import { ErrorType } from '../../types/errorType';
 type ErrorModalType = {
   onClose: () => void;
   open: boolean;
-  error: ErrorType|null;
+  error: ErrorType | null;
   submit: () => void;
 };
 

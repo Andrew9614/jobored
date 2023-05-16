@@ -30,17 +30,17 @@
       display: flex;
       gap: 8px;
     }
-		&.big {
-			font-size: 20px;
-			gap: 16px;
-			.profession {
-				font-size: 28px;
-				line-height: unset;
-			}
-			.location {
-				font-size: 16px;
-			}
-		}
+    &.big {
+      font-size: 20px;
+      gap: 16px;
+      .profession {
+        font-size: 28px;
+        line-height: unset;
+      }
+      .location {
+        font-size: 16px;
+      }
+    }
   }
   .favStar {
     min-width: 22px;
@@ -60,5 +60,4 @@
       }
     }
   }
-	
 }
