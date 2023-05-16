@@ -42,6 +42,10 @@ export const VacanciesContainer = () => {
   );
 
   useEffect(() => {
+    document.title = 'Поиск вакансий';
+  }, []);
+
+  useEffect(() => {
     setIsModalOpen(false);
     setIsLoading(true);
     Promise.all([

@@ -19,6 +19,10 @@ export const VacancyPage = () => {
   const [favList, setFavList] = useState<VacancyObject[] | null>(null);
 
   useEffect(() => {
+    document.title = vacancyData?.profession || 'Вакансия';
+  }, [vacancyData?.profession]);
+
+  useEffect(() => {
     if (id) {
       if (isNaN(+id)) {
         navigate('/404');

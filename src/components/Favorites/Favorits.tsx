@@ -21,6 +21,10 @@ export const Favorites = () => {
   const [modalError, setModalError] = useState<ErrorType | null>(null);
 
   useEffect(() => {
+    document.title = 'Избраное';
+  }, []);
+
+  useEffect(() => {
     setIsLoading(true);
     favAPI
       .getFavorites()
